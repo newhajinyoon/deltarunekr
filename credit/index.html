@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>한글패치 크레딧</title>
+  <link href="../assets/css/index.css" rel="stylesheet"/>
+  <style>
+    /* 기본 데스크톱 스케일링 */
+    body {
+      transform: scale(1.5);
+      transform-origin: 0 0;
+      width: 66.6667%;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Pixel', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 공통 레이아웃 */
+    .credits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .credit-box {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.5rem, 1vw, 1rem);
+      border: 2px solid white;
+      border-radius: clamp(0.5rem, 1vw, 0.75rem);
+      padding: clamp(0.5rem, 1vw, 1rem);
+      background: rgba(255,255,255,0.1);
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .credit-box:hover {
+      border-color: #FFD700;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* 프로필 이미지 크기 유동적 조정 */
+    .credit-box .profile {
+      flex-shrink: 0;
+      width: clamp(40px, 10vw, 80px);
+      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: clamp(0.25rem, 0.5vw, 0.5rem);
+      max-width: 100%;
+    }
+
+    /* 텍스트 영역 유동적 조정 */
+    .credit-box .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      min-width: 0;
+    }
+    .credit-box .info .name {
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      font-weight: bold;
+      margin-bottom: clamp(0.25rem, 0.5vw, 0.5rem);
+      line-height: 1.2;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .credit-box .info .role {
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      line-height: 1.2;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* 로고, 제목 유동적 */
+    h1 img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    h1 span {
+      font-size: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    /* 네비게이션 링크 유동적 */
+    nav a {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      max-width: 100%;
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      padding: clamp(0.25rem, 0.5vw, 0.5rem) clamp(0.5rem, 1vw, 1rem);
+    }
+
+    /* 챕터 아이콘 크기 유동적 */
+    h2 img {
+      height: clamp(1.5rem, 3vw, 2.5rem);
+      width: auto;
+    }
+    h2 span {
+      font-size: clamp(1rem, 2.5vw, 2rem);
+    }
+
+    /* 모바일 대응 */
+    @media (max-width: 640px) {
+      body {
+        transform: scale(1);
+        width: 100%;
+      }
+      nav ul {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.5rem;
+      }
+      .credits-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .credit-box {
+        padding: clamp(0.5rem, 2vw, 1rem);
+      }
+    }
+    #ch1-icon,
+    #ch2-icon,
+    #ch3-icon,
+    #ch4-icon {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<script>
+  // 오디오 객체 생성
+  const audioMap = {
+    'ch1-icon': new Audio('1.mp3'),
+    'ch2-icon': new Audio('2.mp3'),
+    'ch3-icon': new Audio('3.wav'),
+    'ch4-icon': new Audio('4.wav')
+  };
+
+  // 이미지 클릭 핸들러 설정
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('ch1-icon')?.addEventListener('click', () => {
+      audioMap['ch1-icon'].play();
+    });
+
+    document.getElementById('ch2-icon')?.addEventListener('click', () => {
+      audioMap['ch2-icon'].play();
+    });
+
+    document.getElementById('ch3-icon')?.addEventListener('click', (e) => {
+      audioMap['ch3-icon'].play();
+      e.target.src = 'Chapter_3_icon_knight.png';
+    });
+
+    document.getElementById('ch4-icon')?.addEventListener('click', () => {
+      audioMap['ch4-icon'].play();
+    });
+  });
+</script>
+
+<body class="bg-black text-white font-pixel">
+
+  <!-- 네비게이션 바 -->
+    <nav class="w-full z-40 overflow-hidden bg-nav-blue">
+  <div class="relative w-full">
+    <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
+      <li>
+        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../index.html">게임</a>
+      </li>
+      <li>
+        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../credit/index.html">크레딧</a>
+      </li>
+      <li>
+        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../help/index.html">FAQ</a>
+      </li>
+    </ul>
+  </div>
+  </nav>
+
+  <main class="container mx-auto max-w-4xl px-4 py-8">
+    <h1 class="flex flex-col gap-4 items-center justify-center my-16 font-pixel">
+      <a href="../index.html"><img src="../assets/images/logo.png" alt="DELTARUNE"/></a>
+      <span>한글패치 크레딧</span>
+    </h1>
+
+
+    <!-- 챕터 1~2 -->
+    <section id="chapter12" class="mb-12">
+      <h2 class="flex items-center justify-center gap-4 font-pixel mb-4 highlight-yellow">
+        <img src="Chapter_1_icon.png" alt="Chapter 1" id="ch1-icon"/>
+        <span>챕터 1~2 기여자</span>
+        <img src="Chapter_2_icon.png" alt="Chapter 2" id="ch2-icon"/>
+      </h2>
+      <div class="credits-grid">
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* Eueeeeeeeek</div>
+            <div class="role">챕터 1~2 번역, 챕터 1 검수</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* PP</div>
+            <div class="role">챕터 1 검수</div>
+          </div>
+        </a>
+        <a href="https://caswac1.tistory.com/" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* casw</div>
+            <div class="role">챕터 2 총괄</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 물개</div>
+            <div class="role">챕터 1 (총괄, 검수, 그래픽)</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 반달박사</div>
+            <div class="role">챕터 1~2 검수</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 범벅</div>
+            <div class="role">챕터 1~2 검수</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 임바다</div>
+            <div class="role">챕터 1 (총괄, 프로그래밍, 검수, 그래픽), 챕터 2 기술</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 윤호</div>
+            <div class="role">챕터 1 더빙</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 챕터 3~4 -->
+    <section id="chapter34">
+      <h2 class="flex items-center justify-center gap-4 font-pixel mb-4 highlight-yellow">
+        <img src="Chapter_3_icon.png" alt="Chapter 3" id="ch3-icon"/>
+        <span>챕터 3~4 기여자</span>
+        <img src="Chapter_4_icon.png" alt="Chapter 4" id="ch4-icon"/>
+      </h2>
+      <div class="credits-grid">
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 심지호</div>
+            <div class="role">챕터 3~4 (총괄, 번역, 검수), 챕터 2 검수</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 농맨</div>
+            <div class="role">챕터 3~4 번역, 검수</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 니알</div>
+            <div class="role">챕터 1~4 검수, 챕터 3~4 번역</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 미니오</div>
+            <div class="role">챕터 3~4 기술</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 사계절먼지</div>
+            <div class="role">챕터 3~4 (기술, 번역, 검수, 더빙)</div>
+          </div>
+        </a>
+        <a href="https://im.jinyoon.kr" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 진윤</div>
+            <div class="role">챕터 3~4 기술, 사이트, 패쳐 제작</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          <div class="info">
+            <div class="name">* 외정대</div>
+            <div class="role">챕터 3~4 더빙</div>
+          </div>
+        </a>
+        <a href="#" target="_blank" class="credit-box">
+          
+          <div class="info">
+            <div class="name">* 조재영</div>
+            <div class="role">챕터 3~4 더빙</div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
