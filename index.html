@@ -24,14 +24,8 @@
 <meta content="https://deltarune.com/assets/images/social-logo.png" property="og:image"/>
 <meta content="https://deltarune.com/assets/images/social-logo.png" property="twitter:image"/>
 <link href="./assets/css/index.css" rel="stylesheet"/> 
-<link href="./assets/css/en_US.css" rel="stylesheet"/>
-<script defer="" src="./_bridgetown/static/index.DILYQ7CE.js"></script>
+<script defer="" src="./assets/js/site.js"></script>
 <style>
-/* body {
-    transform: scale(1.5);
-    transform-origin: 0 0;
-    width: 66.6667%;
-} */
 .video-wrapper {
   position: relative;
   width: 100%;
@@ -152,7 +146,7 @@
 
 </style>
 </head>
-<body class="default bg-black" data-controller="scroll" style="font-family: 'DeterminationSansK2', sans-serif;">
+<body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
 <nav class="w-full z-40 overflow-hidden bg-nav-blue">
 <div class="relative w-full">
 <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
@@ -176,12 +170,9 @@
 </div>
 </nav>
 <main>
-<div class="flex flex-col gap-16 pb-16 overflow-visible" data-controller="scroll">
-<section data-controller="particles" id="home">
+<div class="flex flex-col gap-16 pb-16 overflow-visible">
+<section id="home">
 <div class="relative flex justify-center motion-safe:animate-fade-in">
-<div aria-hidden="true" class="absolute justify-center text-center w-full h-full overflow-hidden pointer-events-none z-10 hidden sm:flex animate-fade-in-top motion-reduce:hidden" data-particles-target="container" id="particles"></div>
-<div aria-hidden="true" class="absolute justify-center text-center w-full h-full overflow-hidden pointer-events-none z-10 flex sm:hidden animate-fade-in-top motion-reduce:hidden" data-particles-target="mobile" id="particles_mobile"></div>
-<div aria-hidden="true" class="absolute w-full h-24 pointer-events-none z-6" data-scroll-target="parashadow" style="box-shadow: inset 0px var(--shadow-y) var(--shadow-length) var(--shadow-z) rgba(0,0,0,1)"></div>
 <h1 class="absolute top-[45%] mx-auto flex flex-col items-center justify-center gap-2 md:gap-4 z-20">
 <img alt="DELTARUNE" class="w-xl px-12 md:px-0 highlight-white motion-safe:opacity-0 motion-safe:animate-fade-in" height="167" src="assets/images/logo.png" style="animation-delay: 0.2s" width="1150"/>
 <span class="text-white text-2xl md:text-5xl font-8bit text-center tracking-tighter text-shadow-[1px_1px_0_#203288] motion-safe:opacity-0 motion-safe:animate-fade-in" style="animation-delay: 0.4s">챕터 1-4 비공식 한글패치</span>
@@ -291,7 +282,7 @@
 </div>
 </div>
 </section>
-<!-- Footer 시작 -->
+
 <footer class="py-12 flex justify-center">
   <a href="https://github.com/newhajinyoon/deltarunekr/releases/tag/1.4.2" 
      target="_blank" rel="noopener noreferrer" 
