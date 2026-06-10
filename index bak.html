@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -142,6 +143,7 @@
   display: none;
 }
 /* --- END OF MODAL STYLES --- */
+
 </style>
 </head>
 <body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
@@ -183,30 +185,6 @@
 <div class="relative bg-linear-to-b from-[#004FDE] to-[#001F7E] motion-safe:animate-fade-in">
 <div class="container mx-auto max-w-2xl flex flex-col gap-6 px-4 py-8">
 <div class="flex flex-col items-center justify-center gap-2 z-20 mb-8" id="game">
-
-<!-- ===== [NEW] 챕터 5 출시 카운트다운 & QnA ===== -->
-<div id="ch5-section" class="w-full flex flex-col items-center justify-center mb-16 mt-4 gap-6">
-  
-  <!-- 카운트다운 타이머 (타이머 끝나면 숨김 처리됨) -->
-  <div id="countdown-container" class="flex flex-col items-center justify-center gap-3 transition-opacity duration-500">
-    <h2 class="text-4xl md:text-5xl font-pixel highlight-yellow mb-1 drop-shadow-[2px_2px_0px_#203288]">델타룬 챕터 5</h2>
-    <h3 class="text-xl md:text-2xl text-white font-pixel text-shadow-[1px_1px_0_#203288]">6월 25일 출시 예정</h3>
-    <div id="timer-display" class="flex flex-row items-center justify-center flex-wrap gap-x-2 text-4xl md:text-5xl text-white font-pixel mt-3 tracking-widest drop-shadow-[2px_2px_0px_rgba(0,0,0)]">
-      <!-- 자바스크립트로 시간이 렌더링됩니다 -->
-    </div>
-  </div>
-
-  <!-- 챕터 5 QnA 박스 (타이머가 끝나도 계속 표시됨 / 기존 바이러스 상자 디자인과 통일) -->
-  <div class="relative flex flex-col gap-4 text-white mt-4 border border-white p-4 rounded bg-black w-full text-left">
-    <p class="font-pixel before:pr-2 before:content-['Q:']">챕터 5가 출시되면 한글 패치는 언제 나오나요?</p>
-    <p class="before:pr-2 before:font-pixel before:content-['A:'] font-pixel">챕터 5의 한글 패치 또한 챕터가 나오는 즉시 개발에 착수할 예정입니다.<br>
-      <span class="text-deltarune-gray" style="font-size: 0.85em;">다만 외부 요소에 따라 일정에 변수가 있을 수 있음을 미리 알려드립니다.</span>
-    </p>
-  </div>
-
-</div>
-<!-- ===== // [NEW] 챕터 5 출시 카운트다운 & QnA 끝 ===== -->
-
 <h2 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288]">지금 한글 패치 후 플레이 가능</h2>
 <h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288]"><span style="font-size: 0.85em;">V 1.4.2 (맥 현재 미지원)</span></h4>
 <div class="relative flex flex-row flex-wrap justify-center items-center max-w-none mx-auto gap-4">
@@ -231,6 +209,7 @@
   </a>
 </div>
 
+
 <div class="relative flex flex-col gap-4 text-white mt-4 border border-white p-4 rounded bg-black">
   <p class="font-pixel before:pr-2 before:content-['Q:']">설치 파일이 바이러스로 감지되는데 안전한가요?</p>
   <p class="before:pr-2 before:font-pixel before:content-['A:']">네, <strong class="highlight-yellow">바이러스나 악성 코드는 전혀 포함되어 있지 않습니다.</strong>  
@@ -239,6 +218,7 @@
   </p>
 </div>
 
+
 </div>
 </div>
 <h2 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center">한글패치 진행 튜토리얼 영상</h2>
@@ -246,7 +226,7 @@
 <iframe
   width="560"
   height="315"
-  src=""
+  src="https://www.youtube.com/embed/tB0ofBlxgDQ?si=ixG_LZcGUtuzTb7A"
   title="YouTube video player"
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -330,7 +310,6 @@
   </div>
 </div>
 <script>
-  // 모달 스크립트
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('download-modal');
     const openBtn = document.getElementById('windows-download-btn');
@@ -359,58 +338,6 @@
             closeModal();
         }
     });
-  });
-
-  // 챕터 5 타이머 스크립트
-  document.addEventListener('DOMContentLoaded', () => {
-    // 2026년 6월 25일 00:00:00 (한국 시간 기준)
-    const targetDate = new Date('2026-06-25T00:00:00+09:00').getTime();
-    const timerDisplay = document.getElementById('timer-display');
-    const countdownContainer = document.getElementById('countdown-container');
-
-    // F12 개발자 도구 테스트용 전역 함수 설정
-    window.expireTimerNow = function() {
-      window.FORCE_TIMER_END = true;
-      updateTimer();
-      console.log("🛠️ 강제로 타이머를 종료했습니다! 타이머 UI가 숨겨집니다.");
-    };
-
-    function updateTimer() {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
-
-      // 지정된 시간이 지났거나, 강제로 테스트 함수를 호출한 경우
-      if (distance < 0 || window.FORCE_TIMER_END) {
-        countdownContainer.style.display = 'none'; // 타이머 영역만 숨김 (QnA 박스는 계속 표시)
-        if (window.countdownInterval) clearInterval(window.countdownInterval);
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      const fDays = days.toString().padStart(2, '0');
-      const fHours = hours.toString().padStart(2, '0');
-      const fMins = minutes.toString().padStart(2, '0');
-      const fSecs = seconds.toString().padStart(2, '0');
-
-      // 타이머 글씨가 깨지지 않게 간격(margin/gap)을 충분히 분리
-      timerDisplay.innerHTML = `
-        <span class="highlight-yellow mr-2 md:mr-4">D-${fDays}</span> 
-        <div class="flex items-center text-white">
-          <span class="opacity-90">${fHours}</span>
-          <span class="opacity-50 mx-1 md:mx-2">:</span>
-          <span class="opacity-90">${fMins}</span>
-          <span class="opacity-50 mx-1 md:mx-2">:</span>
-          <span class="opacity-90">${fSecs}</span>
-        </div>
-      `;
-    }
-
-    updateTimer(); // 스크립트 로드 시 1회 실행
-    window.countdownInterval = setInterval(updateTimer, 1000); // 1초마다 업데이트
   });
 </script>
 </body> 
