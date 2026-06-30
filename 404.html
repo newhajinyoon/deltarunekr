@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tree</title>
+    <style>
+        @font-face {
+            font-family: 'GalmuriMono11';
+            src: url('assets/font/GalmuriMono11.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'GalmuriMono7';
+            src: url('assets/font/GalmuriMono7.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'GalmuriMono11', 'Malgun Gothic', sans-serif;
+            overflow: hidden;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        body.pixel-mode {
+            font-family: 'GalmuriMono7', sans-serif;
+        }
+
+        body.pixel-mode #dialogue-box {
+            border-width: 6px; 
+        }
+
+        #tree-image {
+            width: 300px;
+            transition: transform 0.2s;
+            image-rendering: pixelated;
+        }
+
+        #tree-image:active {
+            transform: scale(0.98);
+        }
+
+        #dialogue-box {
+            position: absolute;
+            bottom: 50px;
+            width: 80%;
+            max-width: 600px;
+            height: 150px;
+            border: 2px solid #ffffff;
+            background-color: #000000;
+            padding: 20px;
+            box-sizing: border-box;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #dialogue-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .waiting::after {
+            content: '▼';
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 1rem;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #choices-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .choice {
+            font-size: 1.2rem;
+            margin: 0 20px;
+            color: #ffffff;
+            transition: color 0.1s;
+        }
+
+        .choice:hover {
+            color: #ffff00;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" src="assets/media/man.mp3" loop></audio>
+    <audio id="bgm2" src="assets/media/man2.mp3" loop></audio>
+    <audio id="snd-egg" src="assets/media/egg.mp3"></audio>
+    <audio id="snd-text" src="assets/media/snd_board_text_main.wav"></audio>
+    <audio id="snd-text-end" src="assets/media/snd_board_text_main_end.wav"></audio>
+
+    <img id="tree-image" src="assets/images/tree.gif" alt="Tree">
+
+    <div id="dialogue-box">
+        <div id="dialogue-text"></div>
+        <div id="choices-container"></div>
+    </div>
+
+    <script>
+        window.reset = function() {
+            localStorage.removeItem('gameState');
+            location.reload();
+        };
+
+        const tree = document.getElementById('tree-image');
+        const dBox = document.getElementById('dialogue-box');
+        const dText = document.getElementById('dialogue-text');
+        const choicesDiv = document.getElementById('choices-container');
+        
+        const bgm = document.getElementById('bgm');
+        const bgm2 = document.getElementById('bgm2');
+        const sndEgg = document.getElementById('snd-egg');
+        const sndText = document.getElementById('snd-text');
+        const sndTextEnd = document.getElementById('snd-text-end');
+
+        let gameState = parseInt(localStorage.getItem('gameState')) || 0;
+        let isBgmPlaying = false;
+        let isPixelMode = false; 
+        
+        let isTyping = false;
+        let isWaitingForClick = false;
+        let isChoiceActive = false;
+        
+        let currentShowArrow = true;
+        let currentCallback = null;
+        let typedText = "";
+        let typeInterval = null;
+        let metaInfo = "";
+        let timeInfo = "";
+
+        let isFocusTrapActive = false;
+        let isBetrayed = false;
+
+        let sequenceQueue = [];
+        let sequenceIdx = 0;
+
+        async function fetchMetaInfo() {
+            try {
+                if (navigator.getBattery) {
+                    const battery = await navigator.getBattery();
+                    const level = Math.floor(battery.level * 100);
+                    if (level < 100) {
+                        metaInfo = `${level} 남았다고 조급해하지 말아요.`;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function fetchTimeInfo() {
+            const hour = new Date().getHours();
+            if (hour >= 0 && hour < 5) {
+                timeInfo = "벌써 늦은 새벽인데 잠들지 못했군요,";
+            } else if (hour >= 5 && hour < 12) {
+                timeInfo = "당신의 하루가 이제 막 시작되었겠네요,";
+            } else if (hour >= 12 && hour < 18) {
+                timeInfo = "나른한 오후군요,";
+            } else {
+                timeInfo = "밤이 깊어가고 있군요,";
+            }
+        }
+
+        function handleLeave() {
+            if (isFocusTrapActive) {
+                isBetrayed = true;
+            }
+        }
+
+        function handleReturn() {
+            if (isFocusTrapActive && isBetrayed) {
+                isFocusTrapActive = false; 
+                
+                clearInterval(typeInterval);
+                isTyping = false;
+                isChoiceActive = false;
+                isWaitingForClick = false;
+                choicesDiv.style.display = 'none';
+                dBox.classList.remove('waiting');
+
+                runSequence([
+                    "저를 잊으셨군요.",
+                    beVoid
+                ]);
+            }
+        }
+
+        window.addEventListener('blur', handleLeave);
+        window.addEventListener('focus', handleReturn);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) handleLeave();
+            else handleReturn();
+        });
+
+        function beVoid() {
+            localStorage.setItem('gameState', '-1');
+            document.body.innerHTML = ''; 
+            document.body.style.backgroundColor = 'black';
+        }
+
+        function manLeaves() {
+            localStorage.setItem('gameState', '2');
+            gameState = 2; 
+            
+            dBox.style.display = 'none';
+            choicesDiv.style.display = 'none';
+            dBox.classList.remove('waiting');
+            isChoiceActive = false;
+            isTyping = false;
+            isWaitingForClick = false;
+            currentCallback = null;
+            clearInterval(typeInterval);
+
+            document.body.classList.remove('pixel-mode');
+            isPixelMode = false;
+            tree.src = "assets/images/tree.gif";
+
+            [bgm, bgm2].forEach(audio => {
+                if (audio && !audio.paused) {
+                    let vol = audio.volume;
+                    let fade = setInterval(() => {
+                        if (vol > 0.1) {
+                            vol -= 0.1;
+                            audio.volume = vol;
+                        } else {
+                            audio.volume = 0;
+                            audio.pause();
+                            audio.volume = 1; 
+                            clearInterval(fade);
+                        }
+                    }, 100);
+                }
+            });
+            isBgmPlaying = false;
+        }
+
+        function typeWriter(text, showArrow = true) {
+            isTyping = true;
+            isChoiceActive = false;
+            isWaitingForClick = false;
+            currentShowArrow = showArrow;
+            
+            dBox.classList.remove('waiting');
+            choicesDiv.style.display = 'none';
+            dText.innerHTML = "";
+            
+            let i = 0;
+            typedText = text;
+            clearInterval(typeInterval);
+
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    const char = text.charAt(i);
+                    dText.innerHTML += char;
+                    
+                    if (isPixelMode && char.trim() !== '') {
+                        sndText.currentTime = 0;
+                        sndText.play().catch(()=>{});
+                    }
+                    i++;
+                } else {
+                    finishTyping();
+                }
+            }, 40);
+        }
+
+        function finishTyping() {
+            clearInterval(typeInterval);
+            dText.innerHTML = typedText;
+            isTyping = false;
+            
+            if (isPixelMode) {
+                sndTextEnd.currentTime = 0;
+                sndTextEnd.play().catch(()=>{});
+            }
+
+            if (currentShowArrow) {
+                if (isPixelMode) dBox.classList.add('waiting');
+                isWaitingForClick = true; 
+            } else {
+                if (currentCallback) currentCallback();
+            }
+        }
+
+        function showChoices(option1, option2, onOpt1, onOpt2) {
+            isChoiceActive = true;
+            choicesDiv.innerHTML = `
+                <span class="choice" id="opt1">${option1}</span>
+                <span class="choice" id="opt2">${option2}</span>
+            `;
+            choicesDiv.style.display = 'block';
+
+            document.getElementById('opt1').onclick = (e) => { e.stopPropagation(); isChoiceActive = false; onOpt1(); };
+            document.getElementById('opt2').onclick = (e) => { e.stopPropagation(); isChoiceActive = false; onOpt2(); };
+        }
+
+        function runSequence(seq) {
+            sequenceQueue = seq;
+            sequenceIdx = 0;
+            nextSequence();
+        }
+
+        function nextSequence() {
+            if (sequenceIdx >= sequenceQueue.length) return;
+            const step = sequenceQueue[sequenceIdx++];
+            
+            if (typeof step === 'string') {
+                currentCallback = nextSequence;
+                typeWriter(step, true);
+            } else if (typeof step === 'function') {
+                step(); 
+            } else if (typeof step === 'object') {
+                currentCallback = () => showChoices(step.opt1, step.opt2, step.fn1, step.fn2);
+                typeWriter(step.text, false); 
+            }
+        }
+
+        document.body.addEventListener('click', () => {
+            if (gameState === -1 || isChoiceActive) return;
+
+            if (gameState === 2) {
+                if (isTyping) {
+                    finishTyping();
+                    return;
+                }
+                if (isWaitingForClick && currentCallback) {
+                    isWaitingForClick = false;
+                    dBox.classList.remove('waiting');
+                    currentCallback();
+                    return;
+                }
+                
+                if (dBox.style.display === 'none' || dBox.style.display === '') {
+                    dBox.style.display = 'flex';
+                    runSequence([
+                        "* (음, 남자는 이제 여기 없다.)",
+                        () => {
+                            dBox.style.display = 'none';
+                            currentCallback = null;
+                        }
+                    ]);
+                }
+                return;
+            }
+
+            if (!isBgmPlaying && gameState === 0) {
+                bgm.play().catch(()=>{});
+                isBgmPlaying = true;
+            }
+
+            if (isTyping) {
+                finishTyping();
+                return;
+            }
+
+            if (isWaitingForClick && currentCallback) {
+                isWaitingForClick = false;
+                dBox.classList.remove('waiting');
+                currentCallback();
+            }
+        });
+
+        function startChapter3Meta() {
+            bgm.pause();
+            bgm2.play().catch(()=>{});
+            isBgmPlaying = true;
+            tree.src = "assets/images/tree2.gif";
+            
+            document.body.classList.add('pixel-mode');
+            isPixelMode = true; 
+
+            let seq = [
+                "음,",
+                "봄이 지나 여름이 되었고, 여름이 지나 추위가 찾아왔군요,"
+            ];
+
+            if (timeInfo !== "") seq.push(timeInfo);
+            if (metaInfo !== "") seq.push(metaInfo);
+            
+            seq.push(
+                "그리고 여전히,",
+                "난 잊힌 남자입니다.",
+                {
+                    text: "당신도, 나를 잊을 건가요?",
+                    opt1: "예", opt2: "아니오",
+                    fn1: beVoid,
+                    fn2: () => {
+                        isFocusTrapActive = true; 
+                        
+                        runSequence([
+                            "정말인가요? 당신은 이미 날 여러 번 잊어버렸죠.",
+                            "당신이 나를 만난다 해도, 금방 잊히고 말 거에요.",
+                            "가끔은 저조차도 저에 대해 잊고 마는걸요...",
+                            {
+                                text: "다시 물을게요. 당신도 나를 잊을 건가요?",
+                                opt1: "예", opt2: "아니오",
+                                fn1: beVoid,
+                                fn2: () => {
+                                    isFocusTrapActive = false; 
+                                    
+                                    runSequence([
+                                        "날 기억하겠다고요?",
+                                        "음. 그렇다면, 잊어버려요.",
+                                        "나는 그저 남자예요.",
+                                        "나의 이야기를 귀담아 들어주세요.",
+                                        "아주 오래 전에는, 온 세상이 이곳과 같은 모습이었답니다.",
+                                        {
+                                            text: "이를 믿나요?",
+                                            opt1: "예", opt2: "아니오",
+                                            fn1: () => runSequence([
+                                                "정말인가요? 이런 터무니없는 이야기를 믿나요?",
+                                                "그렇다니 기뻐요. 계속 이야기할게요...",
+                                                nextStoryNode1
+                                            ]),
+                                            fn2: () => runSequence([
+                                                "물론 그렇겠죠. 이것은 그저 이야기이니까요.",
+                                                "그럼, 계속 이야기할게요...",
+                                                nextStoryNode1
+                                            ])
+                                        }
+                                    ]);
+                                }
+                            }
+                        ]);
+                    }
+                }
+            );
+            runSequence(seq);
+        }
+
+        function nextStoryNode1() {
+            runSequence([
+                "음, 세상은 변했어요. 사회가 이루어졌지요.",
+                "땅이 물로 덮이고, 공룡이 나타나고, 빙하기가 찾아왔어요,",
+                "흠... 잠깐, 공룡은 아직도 있죠... 헷갈렸나요?",
+                "그렇든, 그러지 않든, 내가 말할 수 있는 곳은 이 섬밖에 남지 않았어요.",
+                {
+                    text: "나의 말을 이해하나요?",
+                    opt1: "예", opt2: "아니오",
+                    fn1: () => runSequence([
+                        "재미있네요, 저는 이 말이 전혀 이해되지 않거든요.",
+                        nextStoryNode2
+                    ]),
+                    fn2: () => runSequence([
+                        "재미있네요. 저도 이해되지 않아요.",
+                        nextStoryNode2
+                    ])
+                }
+            ]);
+        }
+
+        function nextStoryNode2() {
+            runSequence([
+                "그러나 언젠가, 이 섬 또한 사라지겠지요.",
+                "그렇다면 우리는 다시 만날 수 없을 거예요.",
+                "...",
+                {
+                    text: "다시 만나고 싶었나요?",
+                    opt1: "예", opt2: "아니오",
+                    fn1: () => runSequence([
+                        "오, 기뻐라.",
+                        "나의 일정을 말해줄게요. 귀담아 들어주세요.",
+                        "목요일에는, 나는 도넛을 팔아요.",
+                        "금요일에는, 나는 남은 도넛을 쓰레기장에 버려요.",
+                        "토요일에는, 나는 창가에 도넛을 식혀요.",
+                        "일요일에는, 나는 밀을 거둬요.",
+                        "숨을 참고, 왼쪽 방향으로 걸으면서, 100부터 거꾸로 수를 세세요...",
+                        {
+                            text: "받아적었나요?",
+                            opt1: "예", opt2: "아니오",
+                            fn1: () => runSequence(["당신은 정말 친절하군요.", giveEggAgain]),
+                            fn2: () => runSequence(["음, 이미 날 잊는 듯 하군요.", giveEggAgain])
+                        }
+                    ]),
+                    fn2: beVoid
+                }
+            ]);
+        }
+
+        function giveEggAgain() {
+            runSequence([
+                "이걸 받고 날 기억해주세요.",
+                () => { sndEgg.play().catch(()=>{}); nextSequence(); },
+                "(크리스는 알을 받았다.)",
+                "그러나, 날이 지나면 잃어버릴 수 있으니.",
+                "꼭 어딘가에 놓도록 해요.",
+                {
+                    text: "알은 부끄러운 게 아니랍니다.",
+                    opt1: "알겠다", opt2: "모르겠다",
+                    fn1: finishStory,
+                    fn2: finishStory
+                }
+            ]);
+        }
+
+        function finishStory() {
+            runSequence([
+                "주관이 확실하군요.",
+                "마음에 들어요!",
+                "당신도 나를 잊고, 나도 나를 잊겠지만,",
+                "당신의 친절은 잊지 않을게요.",
+                "이제, 이 섬은 곧 사라집니다. 당신도 떠나야 해요.",
+                "당신이 원한다면, 그곳에서 우리는 다시 만날 겁니다...",
+                "11시간이 걸리든 11년이 걸리든, 델타룬은 기다리고 있을 거예요.",
+                "그러니 여유를 가지고, 세수하고, 옷을 입으세요!",
+                manLeaves
+            ]);
+        }
+
+        function init() {
+            if (gameState === -1) { 
+                beVoid(); 
+                return; 
+            }
+
+            if (gameState === 2) {
+                dBox.style.display = 'none'; 
+                tree.src = "assets/images/tree.gif"; 
+                return;
+            }
+
+            fetchTimeInfo();
+            fetchMetaInfo();
+            dBox.style.display = 'flex';
+
+            if (gameState === 0) {
+                dText.innerText = "* (나무 뒤에 남자가 있다.)";
+                isWaitingForClick = true;
+                
+                currentCallback = () => {
+                    runSequence([
+                        {
+                            text: "* (그가 뭔가를 내밀었다.)",
+                            opt1: "받는다", opt2: "받지 않는다",
+                            fn1: () => {
+                                sndEgg.play().catch(()=>{});
+                                runSequence([
+                                    "* (달걀을 받았다.)",
+                                    "* (세상을 다시 그리면 무언가 변할지도 모른다.)",
+                                    () => { 
+                                        localStorage.setItem('gameState', '1'); 
+                                        gameState = 1;
+                                        dBox.style.display = 'none'; 
+                                        currentCallback = null; 
+                                    }
+                                ]);
+                            },
+                            fn2: () => runSequence(["* (그럼 그는 여기에 있을 필요가 없다.)", beVoid])
+                        }
+                    ]);
+                };
+            } 
+            else if (gameState === 1) {
+                dText.innerText = "챕터 3을 플레이 하셨나요?";
+                showChoices("예", "아니오", 
+                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter3Meta, fn2: beVoid }]),
+                    beVoid
+                );
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
