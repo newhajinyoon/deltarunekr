@@ -112,8 +112,10 @@
 
     <audio id="bgm" src="assets/media/man.mp3" loop></audio>
     <audio id="bgm2" src="assets/media/man2.mp3" loop></audio>
+    <audio id="bgm3" src="assets/media/man3.mp3" loop></audio>
     <audio id="snd-egg" src="assets/media/egg.mp3"></audio>
-    <audio id="snd-text" src="assets/media/snd_board_text_main.wav"></audio>
+    <audio id="snd-text" src="assets/media/snd_text.wav"></audio> <!-- 기본모드(갈무리11) 타이핑음 -->
+    <audio id="snd-text-pixel" src="assets/media/snd_board_text_main.wav"></audio> <!-- 픽셀모드(갈무리7) 타이핑음 -->
     <audio id="snd-text-end" src="assets/media/snd_board_text_main_end.wav"></audio>
 
     <img id="tree-image" src="assets/images/tree.gif" alt="Tree">
@@ -136,8 +138,10 @@
         
         const bgm = document.getElementById('bgm');
         const bgm2 = document.getElementById('bgm2');
+        const bgm3 = document.getElementById('bgm3');
         const sndEgg = document.getElementById('snd-egg');
         const sndText = document.getElementById('snd-text');
+        const sndTextPixel = document.getElementById('snd-text-pixel');
         const sndTextEnd = document.getElementById('snd-text-end');
 
         let gameState = parseInt(localStorage.getItem('gameState')) || 0;
@@ -223,9 +227,9 @@
             document.body.style.backgroundColor = 'black';
         }
 
-        function manLeaves() {
-            localStorage.setItem('gameState', '2');
-            gameState = 2; 
+        function manLeaves(nextState) {
+            localStorage.setItem('gameState', nextState.toString());
+            gameState = nextState; 
             
             dBox.style.display = 'none';
             choicesDiv.style.display = 'none';
@@ -240,7 +244,7 @@
             isPixelMode = false;
             tree.src = "assets/images/tree.gif";
 
-            [bgm, bgm2].forEach(audio => {
+            [bgm, bgm2, bgm3].forEach(audio => {
                 if (audio && !audio.paused) {
                     let vol = audio.volume;
                     let fade = setInterval(() => {
@@ -278,9 +282,14 @@
                     const char = text.charAt(i);
                     dText.innerHTML += char;
                     
-                    if (isPixelMode && char.trim() !== '') {
-                        sndText.currentTime = 0;
-                        sndText.play().catch(()=>{});
+                    if (char.trim() !== '') {
+                        if (isPixelMode) {
+                            sndTextPixel.currentTime = 0;
+                            sndTextPixel.play().catch(()=>{});
+                        } else {
+                            sndText.currentTime = 0;
+                            sndText.play().catch(()=>{});
+                        }
                     }
                     i++;
                 } else {
@@ -300,7 +309,9 @@
             }
 
             if (currentShowArrow) {
-                if (isPixelMode) dBox.classList.add('waiting');
+                if (isPixelMode) {
+                    dBox.classList.add('waiting');
+                }
                 isWaitingForClick = true; 
             } else {
                 if (currentCallback) currentCallback();
@@ -343,7 +354,7 @@
         document.body.addEventListener('click', () => {
             if (gameState === -1 || isChoiceActive) return;
 
-            if (gameState === 2) {
+            if (gameState === 2 || gameState === 4) {
                 if (isTyping) {
                     finishTyping();
                     return;
@@ -357,13 +368,19 @@
                 
                 if (dBox.style.display === 'none' || dBox.style.display === '') {
                     dBox.style.display = 'flex';
-                    runSequence([
-                        "* (음, 남자는 이제 여기 없다.)",
-                        () => {
-                            dBox.style.display = 'none';
-                            currentCallback = null;
-                        }
-                    ]);
+                    if (gameState === 2) {
+                        runSequence([
+                            "* (음, 남자는 이제 여기 없다.)",
+                            () => { dBox.style.display = 'none'; currentCallback = null; }
+                        ]);
+                    } else if (gameState === 4) {
+                        runSequence([
+                            "* (음, 여기에 남자는 없다.)",
+                            "* (... 하지만 크리스의 어깨에는, 그 무게가 여전히 남아있었다.)",
+                            "* (저 멀리, 저 멀리까지 이어져 있는 듯한 그 무게가...)",
+                            () => { dBox.style.display = 'none'; currentCallback = null; }
+                        ]);
+                    }
                 }
                 return;
             }
@@ -385,6 +402,7 @@
             }
         });
 
+        // ------------------ 챕터 3 로직 ------------------
         function startChapter3Meta() {
             bgm.pause();
             bgm2.play().catch(()=>{});
@@ -506,7 +524,7 @@
             runSequence([
                 "이걸 받고 날 기억해주세요.",
                 () => { sndEgg.play().catch(()=>{}); nextSequence(); },
-                "(크리스는 알을 받았다.)",
+                "* (크리스는 알을 받았다.)",
                 "그러나, 날이 지나면 잃어버릴 수 있으니.",
                 "꼭 어딘가에 놓도록 해요.",
                 {
@@ -528,17 +546,116 @@
                 "당신이 원한다면, 그곳에서 우리는 다시 만날 겁니다...",
                 "11시간이 걸리든 11년이 걸리든, 델타룬은 기다리고 있을 거예요.",
                 "그러니 여유를 가지고, 세수하고, 옷을 입으세요!",
-                manLeaves
+                () => manLeaves(2)
             ]);
         }
 
+
+        // ------------------ 챕터 5 로직 ------------------
+        function startChapter5Main() {
+            tree.src = "assets/images/tree.gif";
+            document.body.classList.remove('pixel-mode');
+            isPixelMode = false;
+            
+            bgm.pause(); bgm2.pause();
+            bgm3.play().catch(()=>{});
+            isBgmPlaying = true;
+
+            runSequence([
+                "* (그가 나무 뒤에 있다.)",
+                "* (음, 여기 남자가 있다.)",
+                {
+                    text: "* (그가 당신에게 무언가 건넨다.)",
+                    opt1: "받는다", opt2: "받지 않는다",
+                    fn1: () => {
+                        sndEgg.play().catch(()=>{});
+                        runSequence([
+                            "* (당신은 \"달걀\"을 받았다.)",
+                            {
+                                text: "* (남자를 계속 만났었던가?)",
+                                opt1: "예", opt2: "아니오",
+                                fn1: () => ch5EggDialogue(true),
+                                fn2: () => ch5EggDialogue(false)
+                            }
+                        ]);
+                    },
+                    fn2: () => runSequence([
+                        "* (음, 여기에 남자는 없다.)",
+                        () => manLeaves(4)
+                    ])
+                }
+            ]);
+        }
+
+        function ch5EggDialogue(hasAllEggs) {
+            runSequence([
+                {
+                    text: "* (어떻게 할까?)",
+                    opt1: "더 요구한다", opt2: "더 요구하지 않는다",
+                    fn1: () => hasAllEggs ? ch5RouteA() : ch5RouteX(),
+                    fn2: () => hasAllEggs ? ch5RouteB() : ch5RouteX()
+                }
+            ]);
+        }
+
+        function ch5RouteA() { // 수집(O) & 더 요구한다
+            runSequence([
+                "* (음, 남자는 당신의 어깨에 부드럽게 손을 얹었다.)",
+                "* (그리고, 당신에게 빈 손바닥을 보여주며...)",
+                "* (그는 손가락을 입가에 댄 뒤, 미소를 지으며 고개를 젓는다.)",
+                "* (당신은 이미 모든 것을 가진 것 같다.)",
+                "* (...)",
+                "* (그는 손을 흔들어 작별 인사를 하고, 잠시 후 시선을 살짝 돌린다.)",
+                "* (...)",
+                "* (크리스는 묘한 쓸쓸함을 느꼈다.)",
+                "* (이제 더는 그 남자를 찾지 말아야 한다는 느낌이었다.)",
+                "* (... 애초에 그런 적은 한 번도 없었는데도.)",
+                () => manLeaves(4)
+            ]);
+        }
+
+        function ch5RouteB() { // 수집(O) & 더 요구하지 않는다
+            runSequence([
+                "* (음, 남자는 당신의 어깨에 부드럽게 손을 얹었다.)",
+                "* (그리고, 당신에게 빈 손바닥을 보여주며...)",
+                "* (그는 손가락을 입가에 댄 뒤, 미소를 지으며 고개를 끄덕인다.)",
+                "* (당신은 이미 모든 것을 가진 것 같다.)",
+                "* (...)",
+                "* (그는 손을 흔들어 작별 인사를 하고, 잠시 후 시선을 살짝 돌린다.)",
+                "* (...)",
+                "* (크리스는 묘한 쓸쓸함을 느꼈다.)",
+                "* (이제 더는 그 남자를 찾지 말아야 한다는 느낌이었다.)",
+                "* (... 애초에 그런 적은 한 번도 없었는데도.)",
+                () => manLeaves(4)
+            ]);
+        }
+
+        function ch5RouteX() { // 수집(X)
+            runSequence([
+                "* (남자가 고개를 강하게 끄덕였다.)",
+                "* (그는 저 먼 곳을 가리켰다.)",
+                "* (저편에는, 또 다른 나무가 있었다.)",
+                "* (자세히 보니, 이 나무와 거의 똑같아 보였다.)",
+                "* (고개를 내밀어 보고, 당신은 그 너머에 또 다른 나무가 있다는 것을 알아차렸다.)",
+                "* (마치 거울이 끝없이 늘어선 모습을 바라보는 듯한 느낌이 들었다...)",
+                "* (당신은 머리가 빙빙 돌기 시작했다.)",
+                "* (...남자는 이를 보고 걱정스러운 표정을 지었다.)",
+                "* (그는 무언가 말하고 싶은 듯했지만...)",
+                "* (...)",
+                "* (음, 남자는 미소지었다.)",
+                "* (그리고 당장은 작별을 고하며 손을 흔들었다.)",
+                () => manLeaves(4)
+            ]);
+        }
+
+        // ------------------ 초기화 로직 ------------------
         function init() {
             if (gameState === -1) { 
                 beVoid(); 
                 return; 
             }
 
-            if (gameState === 2) {
+            if (gameState === 4) {
                 dBox.style.display = 'none'; 
                 tree.src = "assets/images/tree.gif"; 
                 return;
@@ -548,7 +665,7 @@
             fetchMetaInfo();
             dBox.style.display = 'flex';
 
-            if (gameState === 0) {
+            if (gameState === 0) { 
                 dText.innerText = "* (나무 뒤에 남자가 있다.)";
                 isWaitingForClick = true;
                 
@@ -575,10 +692,17 @@
                     ]);
                 };
             } 
-            else if (gameState === 1) {
-                dText.innerText = "챕터 3을 플레이 하셨나요?";
+            else if (gameState === 1) { 
+                dText.innerText = "델타룬 챕터 3을 플레이 하셨나요?";
                 showChoices("예", "아니오", 
                     () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter3Meta, fn2: beVoid }]),
+                    beVoid
+                );
+            } 
+            else if (gameState === 2) { 
+                dText.innerText = "델타룬 챕터 5를 플레이하셨나요?";
+                showChoices("예", "아니오", 
+                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter5Main, fn2: beVoid }]),
                     beVoid
                 );
             }
