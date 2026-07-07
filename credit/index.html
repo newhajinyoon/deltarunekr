@@ -18,6 +18,7 @@
       font-family: 'Pixel', sans-serif;
       margin: 0;
       padding: 0;
+      overflow-x: hidden; /* 가로 스크롤 방지 */
     }
 
     .credits-grid {
@@ -123,6 +124,118 @@
       font-size: clamp(1rem, 2.5vw, 2rem);
     }
 
+    /* ======= 업그레이드된 배너 스타일 ======= */
+    .chapter-banner {
+      position: relative;
+      border: 2px solid white;
+      border-radius: clamp(0.5rem, 1vw, 0.75rem);
+      overflow: hidden;
+      background-color: #000;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+    }
+
+    .chapter-banner::before,
+    .chapter-banner::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      image-rendering: pixelated; 
+      opacity: 0.5;
+      transition: opacity 0.3s ease, transform 0.5s ease-out;
+    }
+
+    .chapter-banner::before {
+      left: 0;
+      width: 60%; 
+      -webkit-mask-image: linear-gradient(to right, black 70%, transparent 100%);
+      mask-image: linear-gradient(to right, black 70%, transparent 100%);
+    }
+
+    .chapter-banner::after {
+      right: 0;
+      width: 60%; 
+      -webkit-mask-image: linear-gradient(to left, black 70%, transparent 100%);
+      mask-image: linear-gradient(to left, black 70%, transparent 100%);
+    }
+
+    .chapter-banner:hover::before {
+      opacity: 0.8;
+      transform: scale(1.05) translateX(-1%);
+    }
+    .chapter-banner:hover::after {
+      opacity: 0.8;
+      transform: scale(1.05) translateX(1%);
+    }
+
+    .ch12-banner::before { background-image: url('spr_chbg_image_1.png'); }
+    .ch12-banner::after  { background-image: url('spr_chbg_image_2.png'); }
+
+    .ch34-banner::before { background-image: url('spr_chbg_image_3.png'); }
+    .ch34-banner::after  { background-image: url('spr_chbg_image_4.png'); }
+
+    .chapter-banner h2 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: clamp(0.75rem, 2vw, 1.25rem) 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.65) 25%, rgba(0,0,0,0.65) 75%, transparent 100%);
+    }
+
+    .ch5-banner::before {
+      left: 0;
+      width: 100%; 
+      background-image: url('spr_chbg_image_5.png');
+      -webkit-mask-image: none; 
+      mask-image: none;
+    }
+    .ch5-banner::after {
+      display: none; 
+    }
+    
+    .chapter-banner.ch5-banner:hover::before {
+      opacity: 0.8;
+      transform: scale(1.03); 
+    }
+
+    /* ======= 군중 ======= */
+    #crowd-container {
+      position: fixed;
+      bottom: -4vw; 
+      left: 0;
+      width: 100vw;
+      max-height: 35vh; 
+      z-index: 9999;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      pointer-events: none; 
+      transform: translateY(100%); 
+      will-change: transform;
+    }
+
+    #crowd-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @keyframes popupCrowd {
+      0% { transform: translateY(100%); }
+      15% { transform: translateY(0%); }
+      65% { transform: translateY(0%); }
+      100% { transform: translateY(100%); }
+    }
+
+    .crowd-active {
+      animation: popupCrowd 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* ======= 모바일 ======= */
     @media (max-width: 640px) {
       body {
         transform: scale(1);
@@ -135,17 +248,18 @@
       }
       .credits-grid {
         grid-template-columns: 1fr;
-        gap: 0.5rem;
+        gap: 0.75rem;
       }
       .credit-box {
-        padding: clamp(0.5rem, 2vw, 1rem);
+        padding: clamp(0.75rem, 3vw, 1.25rem); 
+      }
+      
+      #crowd-container {
+        bottom: -5vw; 
       }
     }
 
-    #ch1-icon,
-    #ch2-icon,
-    #ch3-icon,
-    #ch4-icon {
+    #ch1-icon, #ch2-icon, #ch3-icon, #ch4-icon, #ch5-icon {
       cursor: pointer;
     }
   </style>
@@ -158,25 +272,45 @@
     'ch1-icon': new Audio('1.mp3'),
     'ch2-icon': new Audio('2.mp3'),
     'ch3-icon': new Audio('3.wav'),
-    'ch4-icon': new Audio('4.wav')
+    'ch4-icon': new Audio('4.wav'),
+    'ch5-icon': new Audio('5.mp3')
   };
+
+  const crowdAudio = new Audio('crowd-cheer-deltarune.mp3');
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ch1-icon')?.addEventListener('click', () => {
       audioMap['ch1-icon'].play();
     });
-
     document.getElementById('ch2-icon')?.addEventListener('click', () => {
       audioMap['ch2-icon'].play();
     });
-
     document.getElementById('ch3-icon')?.addEventListener('click', (e) => {
       audioMap['ch3-icon'].play();
       e.target.src = 'Chapter_3_icon_knight.png';
     });
-
     document.getElementById('ch4-icon')?.addEventListener('click', () => {
       audioMap['ch4-icon'].play();
+    });
+    document.getElementById('ch5-icon')?.addEventListener('click', () => {
+      audioMap['ch5-icon']?.play();
+    });
+
+    // 링크가 없는(no-link) 크레딧 박스 클릭 이벤트 추가
+    const crowdContainer = document.getElementById('crowd-container');
+    const noLinkBoxes = document.querySelectorAll('.credit-box.no-link');
+
+    noLinkBoxes.forEach(box => {
+      box.addEventListener('click', () => {
+        // 군중 소리 처음부터 재생
+        crowdAudio.currentTime = 0;
+        crowdAudio.play();
+
+        // 애니메이션 초기화 후 재실행 (클릭 연타 대응)
+        crowdContainer.classList.remove('crowd-active');
+        void crowdContainer.offsetWidth; // Reflow를 발생시켜 애니메이션 초기화
+        crowdContainer.classList.add('crowd-active');
+      });
     });
   });
 </script>
@@ -207,11 +341,14 @@
     </h1>
 
     <section id="chapter12" class="mb-12">
-      <h2 class="flex items-center justify-center gap-4 font-pixel mb-4 highlight-yellow">
-        <img src="Chapter_1_icon.png" alt="Chapter 1" id="ch1-icon"/>
-        <span>챕터 1~2 기여자</span>
-        <img src="Chapter_2_icon.png" alt="Chapter 2" id="ch2-icon"/>
-      </h2>
+      <div class="chapter-banner ch12-banner mb-4">
+        <h2 class="flex items-center justify-center gap-4 font-pixel highlight-yellow">
+          <img src="Chapter_1_icon.png" alt="Chapter 1" id="ch1-icon"/>
+          <span>챕터 1~2 기여자</span>
+          <img src="Chapter_2_icon.png" alt="Chapter 2" id="ch2-icon"/>
+        </h2>
+      </div>
+
       <div class="credits-grid">
         <div class="credit-box no-link">
           <div class="info">
@@ -257,24 +394,33 @@
         </div>
         <div class="credit-box no-link">
           <div class="info">
-            <div class="name">* 윤호</div>
-            <div class="role">챕터 1 더빙</div>
+            <div class="name">* 심지호</div>
+            <div class="role">챕터 2 검수</div>
+          </div>
+        </div>
+        <div class="credit-box no-link">
+          <div class="info">
+            <div class="name">* 니알</div>
+            <div class="role">챕터 1~2 검수</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="chapter34">
-      <h2 class="flex items-center justify-center gap-4 font-pixel mb-4 highlight-yellow">
-        <img src="Chapter_3_icon.png" alt="Chapter 3" id="ch3-icon"/>
-        <span>챕터 3~4 기여자</span>
-        <img src="Chapter_4_icon.png" alt="Chapter 4" id="ch4-icon"/>
-      </h2>
+    <section id="chapter34" class="mb-12">
+      <div class="chapter-banner ch34-banner mb-4">
+        <h2 class="flex items-center justify-center gap-4 font-pixel highlight-yellow">
+          <img src="Chapter_3_icon.png" alt="Chapter 3" id="ch3-icon"/>
+          <span>챕터 3~4 기여자</span>
+          <img src="Chapter_4_icon.png" alt="Chapter 4" id="ch4-icon"/>
+        </h2>
+      </div>
+
       <div class="credits-grid">
         <div class="credit-box no-link">
           <div class="info">
             <div class="name">* 심지호</div>
-            <div class="role">챕터 3~4 (총괄, 번역, 검수), 챕터 2 검수</div>
+            <div class="role">챕터 3~4 (총괄, 번역, 검수)</div>
           </div>
         </div>
         <div class="credit-box no-link">
@@ -286,13 +432,7 @@
         <div class="credit-box no-link">
           <div class="info">
             <div class="name">* 니알</div>
-            <div class="role">챕터 1~4 검수, 챕터 3~4 번역</div>
-          </div>
-        </div>
-        <div class="credit-box no-link">
-          <div class="info">
-            <div class="name">* 미니오</div>
-            <div class="role">챕터 3~4 기술</div>
+            <div class="role">챕터 3~4 번역, 검수</div>
           </div>
         </div>
         <div class="credit-box no-link">
@@ -319,14 +459,52 @@
             <div class="role">챕터 3~4 더빙</div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section id="chapter5" class="mb-12">
+      <div class="chapter-banner ch5-banner mb-4">
+        <h2 class="flex items-center justify-center gap-4 font-pixel highlight-yellow">
+          <img src="Chapter_5_icon.png" alt="Chapter 5" id="ch5-icon"/>
+          <span>챕터 5 기여자</span>
+          <img src="Chapter_5_icon.png" alt="dummy" style="opacity: 0; pointer-events: none;"/>
+        </h2>
+      </div>
+
+      <div class="credits-grid">
+      </div>
+    </section>
+    
+    <section id="special-thanks">
+      <h2 class="flex items-center justify-center gap-4 font-pixel mb-4 highlight-yellow">
+        <span>특별 감사</span>
+      </h2>
+      <div class="credits-grid">
+        <div class="credit-box no-link">
+          <div class="info">
+            <div class="name">* 윤호</div>
+            <div class="role">챕터 1 더빙</div>
+          </div>
+        </div>
+        <div class="credit-box no-link">
+          <div class="info">
+            <div class="name">* 미니오</div>
+            <div class="role">이름 입력기 코드 제공</div>
+          </div>
+        </div>
         <a href="http://youtube.com/c/sertune9" target="_blank" class="credit-box">
           <div class="info">
             <div class="name">* SerTune9</div>
-            <div class="role">테나 인트로 영상 한글화</div>
+            <div class="role">러시아패치팀 자료로 테나 인트로 영상 한글화</div>
           </div>
         </a>
       </div>
     </section>
   </main>
+
+  <div id="crowd-container">
+    <img src="Crowd_overworld.gif" alt="Crowd Cheering">
+  </div>
+
 </body>
 </html>
