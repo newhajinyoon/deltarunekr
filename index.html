@@ -287,9 +287,96 @@
     text-shadow: 1px 1px 0 #203288;
 }
 #toast.show { opacity: 1; }
+
+/* --- FLOWER & STAR STYLES (IMPROVED FOR MOBILE & NO-FLOAT) --- */
+.flower-container {
+  position: absolute;
+  top: 48px;
+  z-index: 30;
+  width: 380px; 
+  max-width: 45vw; 
+  pointer-events: none; 
+}
+
+/* 모바일 환경 최적화 (안 거슬리게 크기 감소 및 약간의 투명도) */
+@media (max-width: 768px) {
+  .flower-container {
+    width: 150px;
+    max-width: 35vw;
+    opacity: 0.7; /* 메인 콘텐츠 시야 방해 최소화 */
+    top: 55px;
+  }
+}
+
+.flower-left {
+  left: 0;
+  transform: translateX(-100%);
+  animation: slideInLeft 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.flower-right {
+  right: 0;
+  transform: translateX(100%) scaleX(-1);
+  animation: slideInRight 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.flower-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(3px 5px 8px rgba(0, 0, 0, 0.6));
+}
+
+@keyframes slideInLeft {
+  0% { transform: translateX(-100%) rotate(-10deg); opacity: 0; }
+  100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+}
+@keyframes slideInRight {
+  0% { transform: translateX(100%) scaleX(-1) rotate(-10deg); opacity: 0; }
+  100% { transform: translateX(0) scaleX(-1) rotate(0deg); opacity: 1; }
+}
+
+/* 반짝이는 별 효과 */
+.sparkle-star {
+  position: absolute;
+  opacity: 0;
+  animation-name: sparkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+  z-index: 31;
+}
+
+@keyframes sparkle {
+  0% { 
+    opacity: 0; 
+    transform: scale(0) rotate(0deg); 
+    filter: brightness(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2) rotate(180deg); 
+    filter: brightness(1.5) drop-shadow(0 0 6px rgba(255,255,255,0.8)); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(0) rotate(360deg); 
+    filter: brightness(1); 
+  }
+}
 </style>
 </head>
 <body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
+
+<!-- 꽃 장식 시작 (둥둥 떠다니는 효과 래퍼 제거됨) -->
+<div class="flower-container flower-left">
+  <img src="assets/images/ch5-flowers.png" alt="Flowers" class="flower-img">
+</div>
+<div class="flower-container flower-right">
+  <img src="assets/images/ch5-flowers.png" alt="Flowers" class="flower-img">
+</div>
+<!-- 꽃 장식 끝 -->
+
 <nav class="w-full z-40 overflow-hidden bg-nav-blue">
 <div class="relative w-full">
 <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
@@ -332,7 +419,9 @@
 <div class="w-full flex flex-col items-center justify-center mt-2 mb-12 gap-2">
   
   <div class="w-full flex flex-col items-center justify-center mb-6 mt-4 gap-2 text-center">
-    <h2 class="text-3xl md:text-5xl font-pixel highlight-yellow mb-1">챕터 5 한글패치 제작 중!</h2>
+    <h2 class="text-3xl md:text-5xl font-pixel highlight-yellow mb-2">챕터 5 한글패치 제작 중!</h2>
+    <!-- text-shadow 제거로 쨍한 노란색 적용 & fade-in 효과 추가 -->
+    <h3 class="text-2xl md:text-4xl font-pixel highlight-yellow mb-1 motion-safe:opacity-0 motion-safe:animate-fade-in" style="animation-delay: 0.5s; animation-fill-mode: forwards;">델타룬 한글패치 31일 출시 예정!</h3>
     <p class="text-lg md:text-xl text-white font-pixel text-shadow-[1px_1px_0_#203288]">조금만 기다려주시면 감사하겠습니다!</p>
   </div>
 
@@ -346,33 +435,39 @@
       <p class="before:pr-2 before:font-pixel before:content-['A:'] font-pixel qna-text-a" style="margin-bottom:0;">정확한 출시 일정은 아직 알기 어렵지만, 업데이트 확인 즉시 패치 개발에 착수한 상태입니다. 완성될 때까지 조금만 기다려 주시면 감사하겠습니다!</p>
     </div>
 
-    <div class="flex flex-col gap-4 mt-2">
-      <h3 class="font-pixel text-xl md:text-2xl text-white flex flex-wrap items-center gap-2 mb-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    <!-- 접기/펼치기가 적용된 롤백 영역 -->
+    <details class="group mt-2 outline-none">
+      <summary class="font-pixel text-xl md:text-2xl text-white flex flex-wrap items-center gap-2 mb-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:text-deltarune-yellow transition-colors select-none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         <span>게임을 롤백하여 챕터 1~4 패치를 적용하는 방법</span>
         <span style="color: rgba(255,255,255,0.6); font-size: 0.75em; white-space: nowrap;">(윈도우)</span>
-      </h3>
-      <ol class="font-pixel rollback-list">
-        <li><span class="code-inline text-deltarune-yellow">Win + R</span> 키를 눌러 실행 창을 엽니다.</li>
-        <li>입력창에 <span class="code-inline text-deltarune-yellow">steam://open/console</span> 을 입력하고 확인을 누릅니다.</li>
-        <li>스팀 콘솔창 맨 아래 입력칸에 아래 명령어를 복사하여 붙여넣고 엔터를 칩니다:
-          <div class="copy-wrapper">
-            <div class="copy-input" id="cmd-text">download_depot 1671210 1671212 5291565625263756968</div>
-            <button onclick="copyText('cmd-text')" class="copy-btn">명령어 복사</button>
-          </div>
-        </li>
-        <li>다운로드가 완료되면 콘솔창에 다운로드된 폴더 경로가 표시됩니다. 보통 아래 경로에 저장됩니다:
-          <div class="copy-wrapper">
-            <div class="copy-input path-type" id="path-text">C:\Program Files (x86)\Steam\steamapps\content\app_1671210\depot_1671212\</div>
-            <button onclick="copyText('path-text')" class="copy-btn">경로 복사</button>
-          </div>
-          <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.4rem;">* 설정에 따라 다른 경로에 저장될 수도 있습니다. 이 경로가 아니라면 스팀 콘솔에 뜬 다운로드 된 경로를 확인해주세요.</p>
-        </li>
-        <li>본 사이트에서 한글패처를 다운받아 실행한 뒤, 위에서 복사해 연 <span class="highlight-yellow">depot_1671212</span> 폴더를 게임 설치 경로로 잡아줍니다.</li>
-        <li>그 폴더에 한글 패치를 진행합니다.</li>
-        <li>패치가 완료되면, 해당 폴더 내에 있는 <span class="code-inline text-deltarune-yellow">deltarune.exe</span>를 실행하여 한글패치가 적용된 상태로 게임을 즐기시면 됩니다!</li>
-      </ol>
-    </div>
+        <span class="ml-auto transform transition-transform group-open:rotate-180 text-deltarune-yellow">▼</span>
+      </summary>
+      
+      <div class="mt-4 pt-4 border-t border-white/20">
+        <ol class="font-pixel rollback-list">
+          <li><span class="code-inline text-deltarune-yellow">Win + R</span> 키를 눌러 실행 창을 엽니다.</li>
+          <li>입력창에 <span class="code-inline text-deltarune-yellow">steam://open/console</span> 을 입력하고 확인을 누릅니다.</li>
+          <li>스팀 콘솔창 맨 아래 입력칸에 아래 명령어를 복사하여 붙여넣고 엔터를 칩니다:
+            <div class="copy-wrapper">
+              <div class="copy-input" id="cmd-text">download_depot 1671210 1671212 5291565625263756968</div>
+              <button onclick="copyText('cmd-text')" class="copy-btn">명령어 복사</button>
+            </div>
+          </li>
+          <li>다운로드가 완료되면 콘솔창에 다운로드된 폴더 경로가 표시됩니다. 보통 아래 경로에 저장됩니다:
+            <div class="copy-wrapper">
+              <div class="copy-input path-type" id="path-text">C:\Program Files (x86)\Steam\steamapps\content\app_1671210\depot_1671212\</div>
+              <button onclick="copyText('path-text')" class="copy-btn">경로 복사</button>
+            </div>
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.4rem;">* 설정에 따라 다른 경로에 저장될 수도 있습니다. 이 경로가 아니라면 스팀 콘솔에 뜬 다운로드 된 경로를 확인해주세요.</p>
+          </li>
+          <li>본 사이트에서 한글패처를 다운받아 실행한 뒤, 위에서 복사해 연 <span class="highlight-yellow">depot_1671212</span> 폴더를 게임 설치 경로로 잡아줍니다.</li>
+          <li>그 폴더에 한글 패치를 진행합니다.</li>
+          <li>패치가 완료되면, 해당 폴더 내에 있는 <span class="code-inline text-deltarune-yellow">deltarune.exe</span>를 실행하여 한글패치가 적용된 상태로 게임을 즐기시면 됩니다!</li>
+        </ol>
+      </div>
+    </details>
+    <!-- 접기/펼치기 끝 -->
 
   </div>
 </div>
@@ -516,6 +611,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // 다운로드 모달 로직
     const modal = document.getElementById('download-modal');
     const openBtn = document.getElementById('windows-download-btn');
     const closeBtn = modal.querySelector('.close-button');
@@ -543,8 +639,46 @@
             closeModal();
         }
     });
+
+    // 반짝이 별 생성 로직
+    const starCount = 8; 
+    const containers = ['.flower-left', '.flower-right'];
+    
+    containers.forEach(selector => {
+      const container = document.querySelector(selector);
+      if(!container) return;
+      
+      for(let i = 0; i < starCount; i++) {
+        const star = document.createElement('img');
+        const randomNum = Math.floor(Math.random() * 7) + 1; // 1 ~ 7 
+        star.src = `assets/images/ch5-star-${randomNum}.png`;
+        star.className = 'sparkle-star';
+        
+        // 크기 랜덤화 (20px ~ 55px)
+        const size = 20 + Math.random() * 35;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        
+        // 꽃 이미지 위아래로 자연스럽게 퍼지도록 위치 조정
+        const top = Math.random() * 85; 
+        const left = 10 + Math.random() * 75;
+        
+        // 반짝이는 애니메이션 딜레이 및 지속시간 랜덤화
+        const delay = Math.random() * 3; 
+        const duration = 1.5 + Math.random() * 2.5; 
+        
+        star.style.top = `${top}%`;
+        star.style.left = `${left}%`;
+        star.style.animationDelay = `${delay}s`;
+        star.style.animationDuration = `${duration}s`;
+        
+        // 둥둥 떠다니는 효과가 제거되었으므로 container에 바로 추가
+        container.appendChild(star);
+      }
+    });
   });
 
+  // 텍스트 복사 로직
   function copyText(elementId) {
     const textToCopy = document.getElementById(elementId).innerText.trim();
     navigator.clipboard.writeText(textToCopy).then(() => {
