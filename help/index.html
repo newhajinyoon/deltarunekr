@@ -1,183 +1,177 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko"> <!-- 언어 설정도 한국어 페이지이므로 'ko'로 수정하는 것을 권장합니다 -->
   <head>
     <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
 
-<title>도움말 | DELTARUNE</title>
+    <title>도움말 | DELTARUNE</title>
 
-<meta property="og:site_name" content="DELTARUNE">
-<meta property="og:title" content="Help">
-<meta property="twitter:title" content="Help">
-<meta property="og:locale" content="en_US">
-<meta name="description" content="『UNDERTALE』의 평행 세계 이야기, 『DELTARUNE』을 만나보세요. 챕터가 거듭될수록 결말에 가까워지는 이야기 속에서 새로운 친구들, 그리고 그리운 얼굴들을 마주하게 됩니다. 펑키한 음악에 몸을 맡기고, 비폭력 RPG 전투를 통해 쏟아지는 탄막을 요리조리 피해보세요.">
-<meta property="og:description" content="『UNDERTALE』의 평행 세계 이야기, 『DELTARUNE』을 만나보세요. 챕터가 거듭될수록 결말에 가까워지는 이야기 속에서 새로운 친구들, 그리고 그리운 얼굴들을 마주하게 됩니다. 펑키한 음악에 몸을 맡기고, 비폭력 RPG 전투를 통해 쏟아지는 탄막을 요리조리 피해보세요.">
-<link rel="canonical" href="../">
-<meta property="og:url" content="https://www.deltarunekr.kro.kr/">
-<link rel="icon" type="image/png" href="../icon.png">
-<meta property="og:image" content="https://deltarune.com/assets/images/social-logo.png">
-<meta property="twitter:image" content="https://deltarune.com/assets/images/social-logo.png">
-<meta property="og:type" content="article">
-<meta property="article:published_time" content="2025-06-17T19:43:49+00:00">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@undertale">
+    <meta property="og:site_name" content="DELTARUNE">
+    <meta property="og:title" content="Help">
+    <meta property="twitter:title" content="Help">
+    <meta property="og:locale" content="ko_KR"> <!-- 한국어 페이지이므로 ko_KR이 좋습니다 -->
+    <meta name="description" content="『UNDERTALE』의 평행 세계 이야기, 『DELTARUNE』을 만나보세요. 챕터가 거듭될수록 결말에 가까워지는 이야기 속에서 새로운 친구들, 그리고 그리운 얼굴들을 마주하게 됩니다. 펑키한 음악에 몸을 맡기고, 비폭력 RPG 전투를 통해 쏟아지는 탄막을 요리조리 피해보세요.">
+    <meta property="og:description" content="『UNDERTALE』의 평행 세계 이야기, 『DELTARUNE』을 만나보세요. 챕터가 거듭될수록 결말에 가까워지는 이야기 속에서 새로운 친구들, 그리고 그리운 얼굴들을 마주하게 됩니다. 펑키한 음악에 몸을 맡기고, 비폭력 RPG 전투를 통해 쏟아지는 탄막을 요리조리 피해보세요.">
+    <link rel="canonical" href="../">
+    <meta property="og:url" content="https://www.deltarunekr.kro.kr/">
+    <link rel="icon" type="image/png" href="../icon.png">
+    <meta property="og:image" content="https://deltarune.com/assets/images/social-logo.png">
+    <meta property="twitter:image" content="https://deltarune.com/assets/images/social-logo.png">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2025-06-17T19:43:49+00:00">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@undertale">
 
-<link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/index.css">
 
-<script src="../assets/js/site.js" defer=""></script>
+    <script src="../assets/js/site.js" defer=""></script>
 
+    <script>
+      // 페이지 로드 시 스크립트 실행 (오류 방지)
+      window.addEventListener('DOMContentLoaded', function () {
+        // 스크롤 복원
+        const savedScroll = sessionStorage.getItem('scrollY');
+        if (savedScroll !== null) {
+          window.scrollTo(0, parseInt(savedScroll));
+          sessionStorage.removeItem('scrollY');
+        }
 
-    
+        // 클릭할 때 스크롤 위치 저장 (이벤트 리스너를 DOM 로드 이후로 이동)
+        const zapperLink = document.getElementById('zapper-link');
+        if(zapperLink) {
+          zapperLink.addEventListener('click', function () {
+            sessionStorage.setItem('scrollY', window.scrollY);
+          });
+        }
+      });
+    </script>
   </head>
-  <style>
-  </style>
-  <script>
-  // 클릭할 때 스크롤 위치 저장
-  document.getElementById('zapper-link').addEventListener('click', function () {
-    sessionStorage.setItem('scrollY', window.scrollY);
-  });
-
-  // 페이지 로드 시 스크롤 복원
-  window.addEventListener('DOMContentLoaded', function () {
-    const savedScroll = sessionStorage.getItem('scrollY');
-    if (savedScroll !== null) {
-      window.scrollTo(0, parseInt(savedScroll));
-      sessionStorage.removeItem('scrollY');
-    }
-  });
-</script>
-  <body class="default  bg-black">
+  
+  <body class="default bg-black">
     <nav class="w-full z-40 overflow-hidden bg-nav-blue">
-  <div class="relative w-full">
-    <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
-      <li>
-        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../">게임</a>
-      </li>
-      <li>
-        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../credit/">크레딧</a>
-      </li>
-      <li>
-        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../patch/">패치노트</a>
-      </li>
-      <li>
-        <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../help/">FAQ</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
+      <div class="relative w-full">
+        <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
+          <li>
+            <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../">게임</a>
+          </li>
+          <li>
+            <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../credit/">크레딧</a>
+          </li>
+          <li>
+            <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../patch/">패치노트</a>
+          </li>
+          <li>
+            <a class="px-2 transition-opacity text-white hover:opacity-80 hover:duration-0 duration-150 inline-block text-center text-xs sm:text-sm md:text-lg drop-shadow-[2px_2px_0px_rgba(0,0,0)]" href="../help/">FAQ</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
     <main>
       <div class="container mx-auto px-4 max-w-2xl text-white font-pixel-regular">
-  <h1 class="flex flex-col gap-4 items-center justify-center my-16 font-pixel text-4xl"><a href="../"><img src="../assets/images/logo.png" alt="DELTARUNE" width="1150" height="167"></a><span>FAQ</span></h1>
-  <p class="text-center mb-12 font-pixel">마지막 업데이트 <span class="highlight-yellow">2025년 7월 29일</span></p>
+        <h1 class="flex flex-col gap-4 items-center justify-center my-16 font-pixel text-4xl">
+          <a href="../"><img src="../assets/images/logo.png" alt="DELTARUNE" width="1150" height="167"></a>
+          <span>FAQ</span>
+        </h1>
+        <p class="text-center mb-12 font-pixel">마지막 업데이트 <span class="highlight-yellow">2026년 7월 31일</span></p>
 
-  <section id="faq" class="pl-8 sm:pl-0">
-    <h2 class="font-pixel highlight-yellow text-2xl md:text-4xl mb-12 text-center">자주 묻는 질문</h2>
-    <div class="flex flex-col gap-16">
-    <div class="relative flex flex-col gap-4">
-      <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">
-        더빙은 어떻게 켜고 끄나요?
-      </p>
-      <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-        세이브 파일을 선택하는 화면에서 "한더빙"을 눌러 끄거나 키시면 됩니다.<br>
-        (<span class="highlight-yellow font-pixel">노란색</span>인 상태가 켜진 상태입니다.)
-      </p>
-    </div>
+        <section id="faq" class="pl-8 sm:pl-0">
+          <h2 class="font-pixel highlight-yellow text-2xl md:text-4xl mb-12 text-center">자주 묻는 질문</h2>
+          <div class="flex flex-col gap-16">
+            
+            <!-- 게임 플레이 / 시스템 관련 질문 -->
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">
+                더빙은 어떻게 켜고 끄나요?
+              </p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
+                세이브 파일을 선택하는 화면에서 "한더빙"을 눌러 끄거나 켜시면 됩니다.<br>
+                (<span class="highlight-yellow font-pixel">노란색</span>인 상태가 켜진 상태입니다.)
+              </p>
+            </div>
 
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">델타룬 비공식 한글 패치는 상업적인 프로젝트인가요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">아닙니다. 이 프로젝트는 비영리로 진행되며, 어떠한 수익도 창출하지 않습니다.</p>
-      </div> 
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치에 포함된 언어 파일을 수정해도 되나요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">네, 개인적인 용도로 수정하는 것은 자유입니다. 다만, 수정된 파일을 배포할 계획이 있다면 반드시 <strong>출처를 명시</strong>하고, 패치 팀의 동의를 받아 주세요.</p>
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">설치 파일이 바이러스로 감지되는데 안전한가요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
+                네, <strong>바이러스나 악성 코드</strong>는 전혀 포함되어 있지 않습니다.  
+                보안 프로그램이 인증되지 않은 파일이라고 오탐할 수 있지만, 안심하고 설치하셔도 됩니다. <br>
+                <span style="font-size: 0.85em;">(만약 걱정되신다면 사이트 메인페이지 하단에서 수동 패치 방식도 제공하고 있으니 참고해 주세요.)</span>
+              </p>
+            </div>
+
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">macOS 환경에서도 한글 패치를 사용할 수 있나요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
+                현재 dtkrpatchteam은 비영리로 활동하고 있으며, macOS를 지원하는 기기로 패치를 만드는 것에 어려움이 있습니다. 추후 macOS 지원 기기로 패치 프로그램이 정상 작동하는 것을 확인한 후 업데이트가 있을 예정이니 양해 부탁드립니다.
+              </p>
+            </div>
+
+            <!-- 정책 / 저작권 관련 질문 -->
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">델타룬 비공식 한글 패치는 상업적인 프로젝트인가요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">아닙니다. 이 프로젝트는 비영리로 진행되며, 어떠한 수익도 창출하지 않습니다.</p>
+            </div> 
+
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치가 적용된 게임이나 프로젝트 자체를 유료로 판매하면 어떻게 되나요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
+                해당 행위는 명백한 <strong>금지사항</strong>입니다. 이런 사례가 발견될 경우 즉시 신고해 주세요.</p>
+            </div>
+
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치에 포함된 언어 파일을 수정해도 되나요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">네, 개인적인 용도로 수정하는 것은 자유입니다. 다만, 수정된 파일을 배포할 계획이 있다면 반드시 <strong>출처를 명시</strong>하고, 패치 팀의 동의를 받아 주세요.</p>
+            </div>
+
+            <div class="relative flex flex-col gap-4">
+              <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치에 사용된 에셋을 모딩이나 다른 용도로 활용해도 되나요?</p>
+              <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
+                네, 모딩 및 다른 모드들과의 한글 패치 호환성을 목적으로 한글 패치에 사용된 일부 에셋들을 <a href="https://drive.google.com/file/d/1ZHEaIa9fD3R0VkoKZOEKTjHpGH8h4-7z/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="highlight-yellow underline hover:text-white transition-colors">이곳(구글 드라이브)</a>을 통해 공유하고 있습니다.<br><br>
+                다만 상당수의 요소들에 델타룬의 원본 에셋 코드와 이미지가 남아있으므로, <strong>재배포는 엄격히 금지되며 모든 권리는 델타룬 팀에 귀속됩니다.</strong>
+              </p>
+            </div>
+
+          </div> 
+        </section> 
+
+        <section id="contact">
+          <div class="flex flex-col gap-12 my-24">
+            <h3 class="font-pixel highlight-yellow text-2xl md:text-4xl text-center">문의</h3>
+            <div class="relative flex flex-col gap-4 text-base md:text-lg leading-relaxed">
+              <p>FAQ로도 도움이 안 되거나 버그를 발견하셨다면, 디스코드로 문의해 주세요.</p>
+              <p>다음 내용을 포함해 주세요:</p>
+              <ul class="flex flex-col list-[square] pl-6 gap-2">
+                <li><em>문제에 대한 설명</em> — 화면에 보이는 것과 문제가 발생하기 직전 상황</li>
+              </ul>
+              <p>디스코드 링크:</p>
+              <div class="flex flex-col items-center justify-center my-6 gap-4">
+                <a
+                  href="https://discord.gg/qTZaJZJa3R"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-pixel highlight-blue text-xl md:text-3xl px-6 py-3 transition-colors"
+                >
+                  여기를 클릭하세요!
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치가 적용된 게임이나 프로젝트 자체를 유료로 판매하면 어떻게 되나요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-          해당 행위는 명백한 <strong>금지사항</strong>입니다. 이런 사례가 발견될 경우 즉시 신고해 주세요.</p>
-      </div>
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">설치 파일이 바이러스로 감지되는데 안전한가요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-          네, <strong>바이러스나 악성 코드</strong>는 전혀 포함되어 있지 않습니다.  
-          보안 프로그램이 인증되지 않은 파일이라고 오탐할 수 있지만, 안심하고 설치하셔도 됩니다. <br>
-          <span style="font-size: 0.85em;">(만약 걱정되신다면 사이트 메인페이지 하단에서 수동 패치 방식도 제공하고 있으니 참고해 주세요.)</span>
-        </p>
-      </div>
-
-      
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">패치에 사용된 에셋을 모딩이나 다른 용도로 활용해도 되나요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-          네, 모딩 및 다른 모드들과의 한글 패치 호환성을 목적으로 한글 패치에 사용된 일부 에셋들을 <a href="https://drive.google.com/file/d/1ZHEaIa9fD3R0VkoKZOEKTjHpGH8h4-7z/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="highlight-yellow underline hover:text-white transition-colors">이곳(구글 드라이브)</a>을 통해 공유하고 있습니다.<br><br>
-          다만 상당수의 요소들에 델타룬의 원본 에셋 코드와 이미지가 남아있으므로, <strong>재배포는 엄격히 금지되며 모든 권리는 델타룬 팀에 귀속됩니다.</strong>
-        </p>
-      </div>
-
-      
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">macOS 환경에서도 한글 패치를 사용할 수 있나요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-          현재 dtkrpatchteam은 비영리로 활동하고 있으며, macOS를 지원하는 기기로 패치를 만드는 것에 어려움이 있습니다. 추후 macOS 지원 기기로 패치 프로그램이 정상 작동하는 것을 확인한 후 업데이트가 있을 예정이니 양해 부탁드립니다.
-        </p>
-      </div>
-
-      
-      <div class="relative flex flex-col gap-4">
-        <p class="font-pixel indent-[-26px] before:pr-2 before:content-['Q:']">챕터 5가 출시되면 한글 패치는 언제 나오나요?</p>
-        <p class="indent-[-26px] before:pr-2 before:font-pixel before:content-['A:']">
-          챕터 5의 한글 패치 또한 챕터가 나오는 즉시 개발에 착수할 예정입니다. 다만 외부 요소에 따라 일정에 변수가 있을 수 있음을 미리 알려드립니다.
-        </p>
-      </div>
-
-    </div> 
-  </section> 
-
-<section id="contact">
-  <div class="flex flex-col gap-12 my-24">
-    <h3 class="font-pixel highlight-yellow text-2xl md:text-4xl text-center">문의</h3>
-    <div class="relative flex flex-col gap-4 text-base md:text-lg leading-relaxed">
-      <p>FAQ로도 도움이 안 되거나 버그를 발견하셨다면, 디스코드로 문의해 주세요.</p>
-      <p>다음 내용을 포함해 주세요:</p>
-      <ul class="flex flex-col list-[square] pl-6 gap-2">
-        <li><em>문제에 대한 설명</em> — 화면에 보이는 것과 문제가 발생하기 직전 상황</li>
-      </ul>
-      <p>디스코드 링크:</p>
-      <div class="flex flex-col items-center justify-center my-6 gap-4">
-        <a
-          href="https://discord.gg/qTZaJZJa3R"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="font-pixel highlight-blue text-xl md:text-3xl px-6 py-3 transition-colors"
-        >
-          여기를 클릭하세요!
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
-
-</div>
-
     </main>
 
     <footer class="relative w-full pt-12 pb-4 md:pb-6 px-4 bg-black text-center">
-  <div class="container mx-auto text-center flex flex-col items-center justify-center gap-2">
+      <div class="container mx-auto text-center flex flex-col items-center justify-center gap-2">
+        <!-- 푸터 내용이 있다면 이곳에 추가 -->
       </div>
-    </div>
-    
-  </div>
-</footer>
+    </footer>
 
-
+    <!-- Zapper 링크 렌더링 위치 수정 (body 안쪽 최하단) -->
+    <a href="./zapper" id="zapper-link" class="inline-block text-center w-full my-4">
+      <img src="./Zapper_battle_idle.gif"
+           alt="Zapper"
+           style="width: 120px; height: auto; cursor: pointer; margin: 0 auto;" />
+    </a>
   </body>
-
-  <a href="./zapper" id="zapper-link">
-    <img src="./Zapper_battle_idle.gif"
-         alt="Zapper"
-         style="width: 120px; height: auto; cursor: pointer;" />
-  </a>
 </html>
