@@ -56,8 +56,67 @@
                 <span>한글패치 패치노트</span>
             </h1>
             
-            <div class="flex flex-col gap-16">
+            <div class="mb-10 bg-red-900/40 border border-red-500 rounded p-4 text-center">
+                <p class="text-gray-300 text-sm md:text-base">패치노트 항목에는 게임의 중요한 스토리나 등장인물에 대한 <strong>스포일러가 포함</strong>되어 있을 수 있습니다.</p>
+            </div><br><br><br>
 
+
+            <div class="flex flex-col gap-16">
+                    <section>
+                    <h2 class="font-pixel highlight-yellow text-2xl md:text-3xl mb-6">v2.0 <span class="text-white text-lg">(2026.07.30)</span></h2>
+                    <div class="flex flex-col gap-4 pl-6">
+                        
+                        <p>🎉 <strong>챕터 5 한글 패치 정식 출시!</strong></p>
+
+                        <h3 class="font-pixel text-xl highlight-yellow">번역 및 텍스트 수정</h3>
+                        <ul class="list-[square] pl-6 flex flex-col gap-2">
+                            <li><strong>챕터 5의 한글화가 완료되어 정식 적용되었습니다.</strong></li>
+                            <li>챕터 4 예언 텍스트를 전면 수정했습니다.<br>
+                                <span style="font-size: 0.85em; color: #ccc;">(기존의 오역을 바로잡고 상황에 맞게 어투를 더욱 자연스럽게 개선했습니다.)</span>
+                            </li>
+                            <li><strong>(중요)</strong> 고유명사 '의지' 및 '마음'의 번역 기조를 대폭 수정했습니다.<br>
+                                <span style="font-size: 0.85em; color: #ccc;">(Determination을 '의지'로, Will을 '마음'으로 일괄 변경했습니다.)</span>
+                                
+                                <details class="mt-1 cursor-pointer">
+                                    <summary class="inline-block text-[0.9em] text-[#66b2ff] hover:underline outline-none">▶ 번역 변경 상세 근거 (펼치기/접기)</summary>
+                                    <p class="mt-2 text-[0.85em] text-gray-300 leading-relaxed cursor-text pl-3 border-l-2 border-gray-600">
+                                        언더테일 시절부터 대다수 유저분들께 <strong>'Determination'</strong>은 <strong>'의지'</strong>로 굳게 각인되어 왔습니다. 원문의 뉘앙스나 일본어판을 고려하여 한때 수정하기도 했었으나, 기존 팬덤의 익숙함과 전작과의 통일성을 존중하는 것이 맞다고 판단하여 다시 '의지'로 유지하기로 합의했습니다.<br><br>
+                                        이에 따라 델타룬의 주요 개념인 <strong>'Will'</strong>을 번역할 대체 단어가 필요했습니다. '각오', '다짐' 등 수많은 후보가 있었지만, 'Will'이 비장한 상황뿐만 아니라 일상적인 대화에서도 무수히 자주 쓰인다는 점이 문제였습니다.<br><br>
+                                        반면 <strong>'마음'</strong>은 일상 대화나 비장한 전투 상황 모두에 유연하게 어울리며, 특히 게임 내에 언급되는 '잃어버린 꿈의 힘'과 연관 짓기에도 애틋한 감정선이 가장 자연스럽게 포용됩니다. 치열한 논의와 투표 끝에, 범용성과 상징성을 모두 갖춘 '마음'을 최종 번역으로 확정하게 되었습니다.
+                                    </p>
+                                </details>
+                            </li>
+                            <li>일부 다크너의 이름을 변경했습니다.
+                                <ul class="list-disc pl-5 mt-1 flex flex-col gap-2 text-[0.9em] text-gray-200">
+                                    <li>'마법사서'의 이름을 원문 음차 표기인 <strong>'비블리옥스'</strong>로 변경했습니다.</li>
+                                    <li>'거신의 파편'을 <strong>'거신의 유체'</strong>로 변경했습니다.
+                                        
+                                        <details class="mt-1 cursor-pointer">
+                                            <summary class="inline-block text-[0.9em] text-[#66b2ff] hover:underline outline-none">▶ 이름 변경 근거 (펼치기/접기)</summary>
+                                            <p class="mt-2 text-[0.85em] text-gray-300 leading-relaxed cursor-text pl-3 border-l-2 border-gray-600">
+                                                사전적으로 '태아'는 출생 전의 상태를 뜻하지만, 해당 몬스터들은 이미 부화해 활동 중인 독립 개체이므로 '유체'가 더 적합하다고 판단했습니다.<br><br>
+                                                또한 '태아'라는 단어가 직접적으로 노출되는 것이 다소 과하게 기괴하거나 불쾌한 인상(고어함)을 줄 수 있다는 의견도 함께 고려하여 최종적으로 '유체'로 확정했습니다.
+                                            </p>
+                                        </details>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                        <h3 class="font-pixel text-xl highlight-yellow">시스템 및 UI 업데이트</h3>
+                        <ul class="list-[square] pl-6 flex flex-col gap-2">
+                            <li><strong>챕터 2~5 동적 조사 시스템 적용:</strong><br>
+                                <span style="font-size: 0.9em; color: #ccc;">텍스트 출력 코드를 자체적으로 수정하여, 기존에 '(이)가', '(은)는' 등으로 어색하게 출력되던 조사가 앞 단어의 받침 유무에 맞춰 동적이고 자연스럽게 출력되도록 개선했습니다.</span>
+                            </li>
+                            <li>전투(배틀) 메뉴의 버튼 UI가 한글화되었습니다.</li>
+                            <li>한글 패치에 자체 제작한 전용 폰트를 새롭게 적용하였으며, 관련 코드를 최적화하여 안정성을 높였습니다.</li>
+                        </ul>
+
+                        <a href="https://github.com/newhajinyoon/deltarunekr/releases/tag/2.0" target="_blank" class="mt-4 font-pixel text-lg underline hover:opacity-80 transition-opacity" style="color: #66b2ff;">
+                            &gt; v2.0 패치 다운로드
+                        </a>
+                    </div>
+                </section>
                 <section>
                     <h2 class="font-pixel highlight-yellow text-2xl md:text-3xl mb-6">v1.4.3 <span class="text-white text-lg">(2026.06.16)</span></h2>
                     <div class="flex flex-col gap-4 pl-6">
