@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<meta content="#000000" name="theme-color"/>
+<title>에셋 갤러리 | 델타룬 한글패치</title>
+<link rel="icon" type="image/png" href="../icon.png">  
+<link href="../assets/css/index.css" rel="stylesheet"/> 
+<style>
+  /* 델타룬 스타일 굵고 투박한 스크롤바 */
+  ::-webkit-scrollbar { width: 14px; }
+  ::-webkit-scrollbar-track { background: #000; border-left: 2px solid #fff; }
+  ::-webkit-scrollbar-thumb { background: #fff; border: 2px solid #000; }
+  ::-webkit-scrollbar-thumb:hover { background: #ffff00; }
+
+  /* 픽셀 배경 패턴 (투명 이미지 확인용 - 그림자 없음) */
+  .checker-bg {
+    background-color: #000;
+    background-image: 
+      linear-gradient(45deg, #222 25%, transparent 25%), 
+      linear-gradient(-45deg, #222 25%, transparent 25%), 
+      linear-gradient(45deg, transparent 75%, #222 75%), 
+      linear-gradient(-45deg, transparent 75%, #222 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  }
+
+  /* 델타룬 상자 디자인 (그림자 제거, 완전 평면) */
+  .retro-box {
+    background-color: #000;
+    border: 2px solid #fff;
+  }
+
+  /* 카드 호버 이펙트 */
+  .asset-card {
+    transition: transform 0.1s, border-color 0.1s;
+  }
+  .asset-card:hover {
+    border-color: #ffff00;
+    transform: translateY(-4px);
+  }
+  .asset-card:hover .card-title { color: #ffff00; }
+  .list-item-row:hover { background-color: #111; }
+  .list-item-row:hover .card-title { color: #ffff00; }
+
+  /* 리스트뷰 하트 커서 효과 */
+  .list-item-row .heart-cursor { opacity: 0; transform: translateX(-10px); transition: all 0.15s; }
+  .list-item-row:hover .heart-cursor { opacity: 1; transform: translateX(0); color: #ff2020; }
+
+  /* 긴 텍스트 깔끔하게 자르기 (리스트/갤러리 카드용) */
+  .truncate-filename {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* 모달 디자인 */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000; opacity: 0; pointer-events: none;
+    transition: opacity 0.15s ease-out;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  
+  .modal-content {
+    background-color: #000; color: #fff;
+    border: 4px solid #fff;
+    padding: 2rem; width: 90%; max-width: 700px;
+    transform: scale(0.95); transition: transform 0.15s ease-out;
+  }
+  .modal-overlay.active .modal-content { transform: scale(1); }
+  
+  .close-button {
+    position: absolute; top: 10px; right: 15px; font-size: 2rem;
+    color: #fff; cursor: pointer; line-height: 1;
+  }
+  .close-button:hover { color: #ffff00; }
+
+  .img-error { border: 2px dashed #ff2020 !important; opacity: 0.5; }
+  
+  /* 로딩 스피너 애니메이션 */
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .loader { border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+
+  /* 기본 텍스트 그림자 강제 해제 */
+  * { text-shadow: none !important; box-shadow: none !important; }
+
+  /* 파일명이 미치도록 길어도 뚫고 나가지 않게 강제 줄바꿈 처리 */
+  .safe-filename {
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+    white-space: normal !important;
+  }
+</style>
+</head>
+<body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
+
+<div class="fixed top-0 left-0 w-full h-full -z-20 bg-[#000000]"></div>
+
+<nav class="w-full z-40 overflow-hidden bg-black border-b-2 border-white">
+  <div class="relative w-full">
+    <ul class="flex items-center justify-center w-full max-w-2xl mx-auto gap-3 md:gap-6 h-12 pr-[96px] md:pr-0 pl-2 md:pl-0 font-8bit uppercase">
+      <li><a class="px-2 transition-opacity text-white hover:opacity-80 duration-150 inline-block" href="../">게임</a></li>
+      <!-- 상단바 "에셋 갤러리" 색상 버그 해결 (기존 highlight-yellow 클래스 복구) -->
+      <li><a class="px-2 transition-opacity text-white highlight-yellow hover:opacity-80 duration-150 inline-block" href="#">에셋 갤러리</a></li>
+      <li><a class="px-2 transition-opacity text-white hover:opacity-80 duration-150 inline-block" href="../credit/">크레딧</a></li>
+      <li><a class="px-2 transition-opacity text-white hover:opacity-80 duration-150 inline-block" href="../patch/">패치노트</a></li>
+      <li><a class="px-2 transition-opacity text-white hover:opacity-80 duration-150 inline-block" href="../help/">FAQ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="container mx-auto max-w-6xl px-4 py-8">
+  <h1 class="flex flex-col gap-2 items-center justify-center mb-8 font-pixel">
+    <span class="text-3xl md:text-5xl text-white highlight-yellow">비공식 패치 에셋 창고</span>
+  </h1>
+
+  <div class="flex flex-col md:flex-row justify-between items-end border-b-4 border-white pb-4 mb-6 gap-4">
+    <div class="flex flex-col gap-2 w-full md:w-auto">
+      <div id="breadcrumb-path" class="text-base md:text-lg text-white font-pixel flex flex-wrap items-center gap-2">
+        <!-- JS 렌더링 -->
+      </div>
+    </div>
+    <div class="flex gap-4 font-pixel text-lg text-white">
+      <button id="btn-gallery" class="opacity-50 hover:opacity-100 hover:text-[#ffff00] transition-colors cursor-pointer" onclick="setViewMode('gallery')">
+        [ ■ 갤러리뷰 ]
+      </button>
+      <button id="btn-list" class="opacity-50 hover:opacity-100 hover:text-[#ffff00] transition-colors cursor-pointer" onclick="setViewMode('list')">
+        [ ≡ 리스트뷰 ]
+      </button>
+    </div>
+  </div>
+
+  <div id="explorer-container" class="min-h-[500px] pb-16">
+    <!-- 초기 로딩 화면 -->
+    <div class="text-center py-20 text-white font-pixel text-xl">
+      <div class="loader mb-4"></div>
+      에셋 목록을 불러오는 중...
+    </div>
+  </div>
+</main>
+
+<!-- 미리보기 모달 -->
+<div id="preview-modal" class="modal-overlay">
+  <div class="modal-content flex flex-col items-center retro-box relative">
+    <span class="close-button font-pixel" onclick="closePreview()">X</span>
+    
+    <!-- safe-filename 클래스를 추가하여 미치도록 긴 이름 강제 줄바꿈 -->
+    <h2 id="modal-title" class="font-pixel text-xl md:text-2xl mt-4 mb-6 text-white highlight-yellow text-center w-full px-4 safe-filename leading-relaxed">
+      파일명
+    </h2>
+    
+    <!-- 이미지 -->
+    <div id="preview-image-container" class="hidden w-full flex justify-center mb-6">
+      <div class="border-2 border-white checker-bg p-4 flex justify-center items-center w-full max-w-[500px] min-h-[200px]">
+        <img id="preview-image" src="" alt="미리보기" class="max-w-full max-h-[50vh] image-pixel">
+      </div>
+    </div>
+
+    <!-- 사운드 -->
+    <div id="preview-audio-container" class="hidden w-full flex justify-center mb-6">
+      <div class="border-2 border-white p-6 flex flex-col justify-center items-center w-full max-w-[500px] bg-black">
+        <svg width="64" height="64" viewBox="0 0 16 16" fill="white" style="shape-rendering: crispEdges;" class="mb-4">
+          <path d="M5 11v2h4v-2H5zm4-8H7v9h2V3zm2 2H9v2h2V5z"/>
+        </svg>
+        <audio id="preview-audio" controls class="w-full"></audio>
+      </div>
+    </div>
+
+    <!-- 범용 다운로드 버튼 -->
+    <div class="w-full flex justify-center mt-4">
+      <a id="download-btn" href="#" download class="bg-black border-2 border-white text-white hover:border-[#ffff00] hover:text-[#ffff00] px-12 py-3 text-xl font-pixel transition-colors duration-150 inline-block">
+        이 파일 내려받기
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+function encodePathForURL(path) {
+  return path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+}
+
+const BASE_ASSET_URL = "./assets/";
+const JSON_URL = "./assets_list.json"; 
+
+let fileTree = {};
+let currentPath = [];
+let currentViewMode = 'gallery'; 
+
+const container = document.getElementById('explorer-container');
+const breadcrumb = document.getElementById('breadcrumb-path');
+
+// 하얀색 도트 아이콘
+const iconFolder = `<svg width="48" height="48" viewBox="0 0 16 16" fill="white" style="shape-rendering: crispEdges;"><path d="M1 3h5l2 2h7v8H1V3z"/></svg>`;
+const iconAudio = `<svg width="48" height="48" viewBox="0 0 16 16" fill="white" style="shape-rendering: crispEdges;"><path d="M5 11v2h4v-2H5zm4-8H7v9h2V3zm2 2H9v2h2V5z"/></svg>`;
+const iconBack = `<svg width="48" height="48" viewBox="0 0 16 16" fill="white" style="shape-rendering: crispEdges;"><path d="M9 3v2H7v2H5v2h2v2h2v2h2v-2H9V9h4V7H9V5h2V3H9z"/></svg>`;
+
+async function loadAssets() {
+  try {
+    const response = await fetch(JSON_URL + '?t=' + new Date().getTime());
+    if (!response.ok) throw new Error("JSON 파일을 찾을 수 없습니다.");
+    const rawPaths = await response.json();
+    
+    rawPaths.forEach(path => {
+      const parts = path.split('/');
+      let current = fileTree;
+      for (let i = 0; i < parts.length; i++) {
+        if (i === parts.length - 1) current[parts[i]] = "file";
+        else {
+          current[parts[i]] = current[parts[i]] || {};
+          current = current[parts[i]];
+        }
+      }
+    });
+    setViewMode('gallery'); 
+  } catch (error) {
+    container.innerHTML = `
+      <div class="text-center py-20 text-[#ff2020] font-pixel text-xl">
+        리스트를 불러오지 못했습니다.<br><br>
+        <span class="text-white text-base">make_list.py 스크립트를 실행해 assets_list.json 파일을 생성해주세요.</span>
+      </div>
+    `;
+  }
+}
+
+function setViewMode(mode) {
+  currentViewMode = mode;
+  document.getElementById('btn-gallery').style.opacity = mode === 'gallery' ? '1' : '0.5';
+  document.getElementById('btn-gallery').style.color = mode === 'gallery' ? '#ffff00' : 'white';
+  
+  document.getElementById('btn-list').style.opacity = mode === 'list' ? '1' : '0.5';
+  document.getElementById('btn-list').style.color = mode === 'list' ? '#ffff00' : 'white';
+  render();
+}
+
+function render() {
+  container.innerHTML = "";
+  
+  let currentDir = fileTree;
+  for (let folder of currentPath) currentDir = currentDir[folder];
+
+  breadcrumb.innerHTML = `* 위치: <span class="cursor-pointer hover:text-[#ffff00] text-white transition-colors" onclick="goBack(-1)">ROOT</span>`;
+  currentPath.forEach((folder, index) => {
+    breadcrumb.innerHTML += ` <span class="text-white">&gt;</span> <span class="cursor-pointer text-white hover:text-[#ffff00] transition-colors" onclick="goBack(${index})">${folder}</span>`;
+  });
+
+  const items = Object.keys(currentDir);
+  const folders = items.filter(k => typeof currentDir[k] === 'object').sort();
+  const files = items.filter(k => currentDir[k] === 'file').sort();
+
+  if (currentViewMode === 'gallery') {
+    container.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4";
+  } else {
+    container.className = "flex flex-col gap-0 retro-box p-0 bg-black";
+  }
+
+  if (currentPath.length > 0) {
+    container.appendChild(createCard(".. (상위 폴더)", "back", () => goBack(currentPath.length - 2)));
+  }
+
+  folders.forEach(folder => {
+    container.appendChild(createCard(folder, "folder", () => {
+      currentPath.push(folder);
+      render();
+    }));
+  });
+
+  files.forEach(file => {
+    const fullFilePath = currentPath.join('/') + '/' + file;
+    const fileUrl = BASE_ASSET_URL + encodePathForURL(fullFilePath);
+    const isImage = file.endsWith('.png');
+    container.appendChild(createCard(file, isImage ? "image" : "audio", () => openPreview(file, fileUrl), fileUrl));
+  });
+}
+
+function createCard(name, type, onClick, url = "") {
+  const el = document.createElement('div');
+  el.addEventListener('click', onClick); 
+  
+  if (currentViewMode === 'gallery') {
+    el.className = "asset-card retro-box cursor-pointer overflow-hidden flex flex-col h-48 bg-black";
+    
+    let visualHTML = "";
+    if (type === "back") visualHTML = `<div class="flex-1 flex items-center justify-center bg-black border-b-2 border-white">${iconBack}</div>`;
+    else if (type === "folder") visualHTML = `<div class="flex-1 flex items-center justify-center bg-black border-b-2 border-white">${iconFolder}</div>`;
+    else if (type === "image") visualHTML = `<div class="flex-1 flex items-center justify-center checker-bg border-b-2 border-white overflow-hidden"><img src="${url}" class="max-w-[90%] max-h-[90%] object-contain image-pixel" loading="lazy" onerror="this.src=''"></div>`;
+    else if (type === "audio") visualHTML = `<div class="flex-1 flex items-center justify-center bg-black border-b-2 border-white">${iconAudio}</div>`;
+
+    el.innerHTML = `
+      ${visualHTML}
+      <div class="p-2 text-center text-sm font-pixel text-white card-title truncate-filename">${name}</div>
+    `;
+  } else {
+    el.className = "list-item-row border-b-2 border-white last:border-b-0 cursor-pointer overflow-hidden flex items-center p-3 gap-4";
+    
+    let visualHTML = "";
+    if (type === "back") visualHTML = `<div class="w-8 h-8 flex items-center justify-center">${iconBack.replace('48','24')}</div>`;
+    else if (type === "folder") visualHTML = `<div class="w-8 h-8 flex items-center justify-center">${iconFolder.replace('48','24')}</div>`;
+    else if (type === "image") visualHTML = `<div class="w-8 h-8 checker-bg border border-white flex items-center justify-center"><img src="${url}" class="w-full h-full object-contain image-pixel" loading="lazy" onerror="this.src=''"></div>`;
+    else if (type === "audio") visualHTML = `<div class="w-8 h-8 flex items-center justify-center">${iconAudio.replace('48','24')}</div>`;
+
+    el.innerHTML = `
+      <span class="heart-cursor text-xl font-pixel text-white">♥</span>
+      ${visualHTML}
+      <div class="flex-1 font-pixel text-base text-white truncate-filename card-title">${name}</div>
+    `;
+  }
+  return el;
+}
+
+function goBack(index) {
+  if (index < 0) currentPath = [];
+  else currentPath = currentPath.slice(0, index + 1);
+  render();
+}
+
+// 모달
+const modal = document.getElementById('preview-modal');
+const modalTitle = document.getElementById('modal-title');
+const imgContainer = document.getElementById('preview-image-container');
+const imgEl = document.getElementById('preview-image');
+const audioContainer = document.getElementById('preview-audio-container');
+const audioEl = document.getElementById('preview-audio');
+const downloadBtn = document.getElementById('download-btn');
+
+function openPreview(fileName, fileUrl) {
+  modalTitle.innerText = fileName;
+  downloadBtn.href = fileUrl;
+
+  imgContainer.classList.add('hidden');
+  audioContainer.classList.add('hidden');
+
+  if (fileName.endsWith('.png')) {
+    imgEl.src = fileUrl;
+    imgContainer.classList.remove('hidden');
+  } 
+  else if (fileName.endsWith('.wav') || fileName.endsWith('.mp3')) {
+    audioEl.src = fileUrl;
+    audioContainer.classList.remove('hidden');
+    audioEl.play().catch(() => {});
+  }
+
+  modal.classList.remove('hidden');
+  void modal.offsetWidth; 
+  modal.classList.add('active');
+}
+
+function closePreview() {
+  modal.classList.remove('active');
+  setTimeout(() => {
+    audioEl.pause();
+    audioEl.src = "";
+    imgEl.src = "";
+  }, 150); 
+}
+
+modal.addEventListener('click', (e) => { if (e.target === modal) closePreview(); });
+document.addEventListener('keydown', (e) => { if (e.key === "Escape" && modal.classList.contains('active')) closePreview(); });
+
+loadAssets();
+</script>
+
+</body>
+</html>
