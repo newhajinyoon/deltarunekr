@@ -294,26 +294,9 @@
 <h2 class="text-3xl md:text-5xl font-pixel highlight-yellow mb-2">한글패치 플레이 가능!</h2>
 
 <h2 class="text-white text-xl md:text-2xl uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center mt-4">챕터 1-5 한글패치 내려받기</h2>
-<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.1 (맥 지원 예정!)</span></h4>
+<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.2 (맥 지원 예정!)</span></h4>
 
-
-
-<div id="beta-warning" class="w-full bg-black/70 border-2 border-[#ffff00] rounded-lg p-5 sm:p-6 mt-4 mb-2 text-center font-pixel text-white cursor-pointer hover:bg-[#ffff00]/10 transition-colors duration-200 shadow-lg group">
-  <div class="flex items-center justify-center gap-2 text-xl md:text-2xl text-[#ffff00] mb-3">
-    <span>⚠️</span>
-    <h3 class="font-bold">패치 안정성 안내</h3>
-    <span>⚠️</span>
-  </div>
-  <p class="text-sm md:text-base mb-3 leading-relaxed opacity-90">
-    현재 버전에 불안정한 부분이 있을 수 있습니다.<br>
-    이번 주 <span class="text-[#ffff00] font-bold">토요일(1일) 저녁</span>부터 매우 안정적인 패치를 만나보실 수 있습니다.
-  </p>
-  <p class="text-sm md:text-base text-[#ffff00] font-bold group-hover:underline underline-offset-4 transition-all">
-    &gt; 그럼에도 베타테스트 플레이하기 (클릭) &lt;
-  </p>
-</div>
-
-<div id="download-wrapper" class="hidden w-full mt-4 motion-safe:animate-fade-in">
+<div id="download-wrapper" class="w-full mt-4 motion-safe:animate-fade-in">
   <div class="relative flex flex-col justify-center items-center max-w-none mx-auto gap-4 w-full">
     <div class="flex flex-row gap-4 flex-wrap justify-center w-full">
       <a id="windows-download-btn" class="flex flex-row gap-4 items-center text-left bg-white/10 hover:bg-white/20 motion-safe:transition-all duration-150 hover:duration-0 border-2 border-white rounded-lg px-6 py-4 hover:border-deltarune-yellow" href="#" style="cursor: pointer;">
@@ -433,10 +416,8 @@
   </a>
 </footer>
 
-<!-- Interactive Modal -->
 <div id="download-modal" class="modal-overlay hidden">
   
-  <!-- [수정] style="position: relative;" 를 추가하여 기준점을 확실히 잡습니다 -->
   <div class="modal-content" style="position: relative;">
     <span class="close-button">&times;</span>
     <h2 class="modal-title font-pixel">
@@ -448,12 +429,11 @@
     
     <div class="modal-buttons">
       <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/1.4.3/ddemokpwindows1.4.2.zip" class="modal-btn font-pixel" download>데모 한글패치 내려받기</a>
-      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.1.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
+      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.2.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
     </div>
     
-    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.1.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
+    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.2.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
 
-    <!-- [수정된 설문조사 배너] Tailwind 빌드 오류를 방지하기 위해 CSS 수치를 직접 주입 -->
     <div class="border-2 border-[#ff3333] rounded-lg p-4 text-center font-pixel text-white bg-black" 
          style="position: absolute; top: calc(100% + 24px); left: -2%; width: 104%; transform: rotate(-1.5deg); transform-origin: top left; z-index: -1; box-shadow: 4px 6px 0px rgba(0,0,0,0.7);">
       <h3 class="text-lg md:text-xl mb-2 flex items-center justify-center gap-2" style="color: #ff3333; text-shadow: 2px 2px 0px rgba(0,0,0,1);">
@@ -476,16 +456,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
-    const betaWarning = document.getElementById('beta-warning');
-    const downloadWrapper = document.getElementById('download-wrapper');
-
-    if (betaWarning && downloadWrapper) {
-      betaWarning.addEventListener('click', () => {
-        betaWarning.style.display = 'none';
-        downloadWrapper.classList.remove('hidden');
-      });
-    }
-
     const bannerLink = document.getElementById('highjinkx-banner-link');
     if (bannerLink) {
       bannerLink.addEventListener('click', () => {
