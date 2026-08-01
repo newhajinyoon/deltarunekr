@@ -28,10 +28,10 @@
 .video-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 비율 */
+  padding-bottom: 56.25%;
   height: 0;
   margin: 0 auto;
-  max-width: 960px; /* 필요시 최대 너비 제한 */
+  max-width: 960px;
 }
 
 .video-wrapper iframe {
@@ -42,22 +42,20 @@
   height: 100%;
 }
 
-/* --- MODAL STYLES --- */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
 }
 
 .modal-content {
@@ -76,7 +74,7 @@
 .modal-content .modal-title {
   font-size: 1.75rem;
   margin-bottom: 1.5rem;
-  color: #ffff00; /* highlight-yellow */
+  color: #ffff00;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +98,7 @@
 }
 
 .close-button:hover {
-    color: #ffff00;
+  color: #ffff00;
 }
 
 .modal-buttons {
@@ -111,63 +109,63 @@
 }
 
 .modal-btn {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px solid white;
-    border-radius: 8px;
-    color: white;
-    padding: 0.75rem 1rem;
-    text-decoration: none;
-    font-size: 1.25rem;
-    transition: all 0.15s;
-    display: block;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid white;
+  border-radius: 8px;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.15s;
+  display: block;
 }
 
 .modal-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-color: #ffff00;
-    color: #ffff00;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: #ffff00;
+  color: #ffff00;
 }
 
 .small-link {
-    font-size: 0.85em;
-    color: white;
-    text-decoration: underline;
+  font-size: 0.85em;
+  color: white;
+  text-decoration: underline;
 }
+
 .small-link:hover {
-    color: #ffff00;
+  color: #ffff00;
 }
 
 .hidden {
   display: none !important;
 }
-/* --- END OF MODAL STYLES --- */
 
 .info-box {
-    width: 100%;
-    background-color: #000;
-    border: 1px solid #fff;
-    border-radius: 0.25rem;
-    padding: 1rem;
-    text-align: left;
-    color: #fff;
+  width: 100%;
+  background-color: #000;
+  border: 1px solid #fff;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  text-align: left;
+  color: #fff;
 }
 
 @media (min-width: 768px) {
-    .info-box { padding: 1.5rem; }
+  .info-box { padding: 1.5rem; }
 }
 
 .qna-text-q {
-    font-size: 1.15rem;
-    color: #F9FF10;
-    margin-bottom: 0.4rem;
-}
-.qna-text-a {
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+  font-size: 1.15rem;
+  color: #F9FF10;
+  margin-bottom: 0.4rem;
 }
 
-/* --- FLOWER & STAR STYLES (IMPROVED FOR MOBILE & NO-FLOAT) --- */
+.qna-text-a {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
 .flower-container {
   position: absolute;
   top: 48px;
@@ -177,12 +175,11 @@
   pointer-events: none; 
 }
 
-/* 모바일 환경 최적화 (안 거슬리게 크기 감소 및 약간의 투명도) */
 @media (max-width: 768px) {
   .flower-container {
     width: 150px;
     max-width: 35vw;
-    opacity: 0.7; /* 메인 콘텐츠 시야 방해 최소화 */
+    opacity: 0.7;
     top: 55px;
   }
 }
@@ -210,12 +207,12 @@
   0% { transform: translateX(-100%) rotate(-10deg); opacity: 0; }
   100% { transform: translateX(0) rotate(0deg); opacity: 1; }
 }
+
 @keyframes slideInRight {
   0% { transform: translateX(100%) scaleX(-1) rotate(-10deg); opacity: 0; }
   100% { transform: translateX(0) scaleX(-1) rotate(0deg); opacity: 1; }
 }
 
-/* 반짝이는 별 효과 */
 .sparkle-star {
   position: absolute;
   opacity: 0;
@@ -247,14 +244,12 @@
 </head>
 <body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
 
-<!-- 꽃 장식 시작 -->
 <div class="flower-container flower-left">
   <img src="assets/images/ch5-flowers.png" alt="Flowers" class="flower-img">
 </div>
 <div class="flower-container flower-right">
   <img src="assets/images/ch5-flowers.png" alt="Flowers" class="flower-img">
 </div>
-<!-- 꽃 장식 끝 -->
 
 <nav class="w-full z-40 overflow-hidden bg-nav-blue">
 <div class="relative w-full">
@@ -278,6 +273,7 @@
 </div>
 </div>
 </nav>
+
 <main>
 <div class="flex flex-col gap-16 pb-16 overflow-visible">
 <section id="home">
@@ -297,33 +293,26 @@
 
 <h2 class="text-3xl md:text-5xl font-pixel highlight-yellow mb-2">한글패치 플레이 가능!</h2>
 
-
 <h2 class="text-white text-xl md:text-2xl uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center mt-4">챕터 1-5 한글패치 내려받기</h2>
 <h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.1 (맥 지원 예정!)</span></h4>
 
-<!-- 번역어 설문 배너 시작 -->
-<div class="w-full bg-black/50 border-2 border-[#ff3333] rounded-lg p-5 mt-6 mb-2 text-center font-pixel text-white">
-  <h3 class="text-xl md:text-2xl text-[#ff3333] mb-3 flex items-center justify-center gap-2 drop-shadow-[2px_2px_0px_rgba(0,0,0,1)]">
-    <span class="motion-safe:animate-pulse">❤️</span> DETERMINATION & WILL 번역어 설문
-  </h3>
-  <p class="text-sm md:text-base mb-5 opacity-90">DETERMINATION & WILL을 어떻게 번역하면 좋을지 설문에 꼭 참여해주세요!</p>
-  <a href="https://forms.gle/BPSrTiiYnaM3dbJH6" target="_blank" rel="noopener noreferrer" class="inline-block bg-[#ff3333]/20 hover:bg-[#ff3333]/40 border-2 border-[#ff3333] hover:border-white rounded-lg px-6 py-3 text-white transition-all duration-150 hover:duration-0">
-    &gt; 설문 참여하러 가기
-  </a>
-</div>
-<!-- 번역어 설문 배너 끝 -->
 
-<!-- ⚠️ 베타 안정성 안내 박스 -->
-<div id="beta-warning" class="w-full bg-black/60 border-2 border-[#ffff00] rounded-lg p-6 mt-4 mb-2 text-center font-pixel text-white cursor-pointer hover:bg-white/10 transition-colors duration-200">
-  <p class="text-xl md:text-2xl text-[#ffff00] mb-3">⚠️ 패치 안정성 안내 ⚠️</p>
-  <p class="text-sm md:text-base mb-2 leading-relaxed opacity-90">현재 버전에 불안정한 부분이 있을 수 있습니다.<br>이번 주 <span class="text-[#ffff00]">토요일(1일) 저녁</span>부터 매우 안정적인 패치를 만나보실 수 있습니다.</p>
-  <div class="mt-6 text-lg md:text-xl motion-safe:animate-pulse">
-    <p>그럼에도 베타테스트를 해보고 싶으시다면...</p>
-    <p class="underline underline-offset-4 mt-2 text-[#ffff00]">&gt; 여기를 클릭하세요 &lt;</p>
+
+<div id="beta-warning" class="w-full bg-black/70 border-2 border-[#ffff00] rounded-lg p-5 sm:p-6 mt-4 mb-2 text-center font-pixel text-white cursor-pointer hover:bg-[#ffff00]/10 transition-colors duration-200 shadow-lg group">
+  <div class="flex items-center justify-center gap-2 text-xl md:text-2xl text-[#ffff00] mb-3">
+    <span>⚠️</span>
+    <h3 class="font-bold">패치 안정성 안내</h3>
+    <span>⚠️</span>
   </div>
+  <p class="text-sm md:text-base mb-3 leading-relaxed opacity-90">
+    현재 버전에 불안정한 부분이 있을 수 있습니다.<br>
+    이번 주 <span class="text-[#ffff00] font-bold">토요일(1일) 저녁</span>부터 매우 안정적인 패치를 만나보실 수 있습니다.
+  </p>
+  <p class="text-sm md:text-base text-[#ffff00] font-bold group-hover:underline underline-offset-4 transition-all">
+    &gt; 그럼에도 베타테스트 플레이하기 (클릭) &lt;
+  </p>
 </div>
 
-<!-- 실제 다운로드 버튼 영역 (초기에는 숨겨짐) -->
 <div id="download-wrapper" class="hidden w-full mt-4 motion-safe:animate-fade-in">
   <div class="relative flex flex-col justify-center items-center max-w-none mx-auto gap-4 w-full">
     <div class="flex flex-row gap-4 flex-wrap justify-center w-full">
@@ -345,13 +334,18 @@
         </div>
       </a>
 
-    <!-- 디스코드 서버 배너 -->
     <div class="w-full flex justify-center mt-2 mb-2">
-      <a href="https://discord.gg/qmC4hyzV5S" target="_blank" rel="noopener noreferrer" class="flex flex-row gap-4 items-center text-left bg-[#5865F2]/20 hover:bg-[#5865F2]/40 motion-safe:transition-all duration-150 hover:duration-0 border-2 border-[#5865F2] rounded-lg px-6 py-4 hover:border-white">
-        <img src="assets/images/discord-icon-svgrepo-com.svg" alt="Discord" class="lg:w-10 lg:h-10 h-8 w-8 flex-shrink-0" />
-        <div class="flex flex-col">
-          <p class="text-2xl font-pixel mb-1 text-white">디스코드 소식/문의 서버</p>
-        </div>
+    <a href="https://discord.gg/qmC4hyzV5S" target="_blank" rel="noopener noreferrer" class="flex flex-row gap-4 items-center text-left bg-[#5865F2]/20 hover:bg-[#5865F2]/40 motion-safe:transition-all duration-150 hover:duration-0 border-2 border-[#5865F2] rounded-lg px-6 py-4 hover:border-white">
+      <img src="assets/images/discord-icon-svgrepo-com.svg" alt="Discord" class="lg:w-10 lg:h-10 h-8 w-8 flex-shrink-0" />
+      <div class="flex flex-col">
+        <p class="text-2xl font-pixel text-white">디스코드 소식/문의 서버</p>
+      </div>
+    </a>
+  </div>
+
+    <div class="w-full mt-2 mb-2">
+      <a href="https://www.highjinkx.com/undertale" target="_blank" rel="noopener noreferrer" id="highjinkx-banner-link" class="block w-full rounded-lg overflow-hidden transition-opacity hover:opacity-90">
+        <img src="assets/images/banner.png" alt="Highjinkx Undertale" width="2953" height="711" class="w-full h-auto block rounded-lg aspect-[2953/711] object-contain" />
       </a>
     </div>
 
@@ -363,9 +357,9 @@
         <span style="font-size: 0.85em; color: rgba(255,255,255,0.6); display: block; margin-top: 0.5rem;">(만약 걱정되신다면 사이트 메인페이지 하단에서 수동 패치 방식도 제공하고 있으니 참고해 주세요.)</span>
       </p>
     </div>
+
   </div>
 </div>
-<!-- 다운로드 래퍼 끝 -->
 
 </div>
 <h2 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center mt-8">한글패치 진행 튜토리얼 영상</h2>
@@ -440,6 +434,7 @@
   </a>
 </footer>
 
+<!-- Interactive Modal -->
 <div id="download-modal" class="modal-overlay hidden">
   <div class="modal-content">
     <span class="close-button">&times;</span>
@@ -457,21 +452,28 @@
   </div>
 </div>
 
+<!-- Main Application Controller -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
-    // 베타 안내 경고 클릭 로직
     const betaWarning = document.getElementById('beta-warning');
     const downloadWrapper = document.getElementById('download-wrapper');
 
     if (betaWarning && downloadWrapper) {
       betaWarning.addEventListener('click', () => {
-        betaWarning.style.display = 'none'; // 경고창 숨김
-        downloadWrapper.classList.remove('hidden'); // 다운로드 컨테이너 표시
+        betaWarning.style.display = 'none';
+        downloadWrapper.classList.remove('hidden');
       });
     }
 
-    // 다운로드 모달 로직
+    const bannerLink = document.getElementById('highjinkx-banner-link');
+    if (bannerLink) {
+      bannerLink.addEventListener('click', () => {
+        fetch('https://api.counterapi.dev/v1/deltarunekr/highjinkx-banner/up', { method: 'GET' })
+          .catch(() => {});
+      });
+    }
+
     const modal = document.getElementById('download-modal');
     const openBtn = document.getElementById('windows-download-btn');
     const closeBtn = modal.querySelector('.close-button');
@@ -485,46 +487,39 @@
       modal.classList.add('hidden');
     };
 
-    // 숨겨진 상태였다가 나타나기 때문에 방어 코드 추가
-    if(openBtn) openBtn.addEventListener('click', openModal);
-    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
     modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === "Escape" && !modal.classList.contains('hidden')) {
         closeModal();
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape" && !modal.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-
-    // 반짝이 별 생성 로직
     const starCount = 8; 
     const containers = ['.flower-left', '.flower-right'];
     
     containers.forEach(selector => {
       const container = document.querySelector(selector);
-      if(!container) return;
+      if (!container) return;
       
-      for(let i = 0; i < starCount; i++) {
+      for (let i = 0; i < starCount; i++) {
         const star = document.createElement('img');
-        const randomNum = Math.floor(Math.random() * 7) + 1; // 1 ~ 7 
+        const randomNum = Math.floor(Math.random() * 7) + 1;
         star.src = `assets/images/ch5-star-${randomNum}.png`;
         star.className = 'sparkle-star';
         
-        // 크기 랜덤화 (20px ~ 55px)
         const size = 20 + Math.random() * 35;
         star.style.width = `${size}px`;
         star.style.height = `${size}px`;
         
-        // 꽃 이미지 위아래로 자연스럽게 퍼지도록 위치 조정
         const top = Math.random() * 85; 
         const left = 10 + Math.random() * 75;
         
-        // 반짝이는 애니메이션 딜레이 및 지속시간 랜덤화
         const delay = Math.random() * 3; 
         const duration = 1.5 + Math.random() * 2.5; 
         
@@ -533,7 +528,6 @@
         star.style.animationDelay = `${delay}s`;
         star.style.animationDuration = `${duration}s`;
         
-        // container에 바로 추가
         container.appendChild(star);
       }
     });
