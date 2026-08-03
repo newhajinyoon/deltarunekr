@@ -240,6 +240,31 @@
     filter: brightness(1); 
   }
 }
+
+.shimmer-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shimmer-animation 2s infinite;
+  pointer-events: none; 
+  z-index: 10;
+}
+
+@keyframes shimmer-animation {
+  0% { left: -100%; }
+  20% { left: 200%; } 
+  100% { left: 200%; } 
+}
 </style>
 </head>
 <body class="default bg-black" style="font-family: 'DeterminationSansK2', sans-serif;">
@@ -294,7 +319,7 @@
 <h2 class="text-3xl md:text-5xl font-pixel highlight-yellow mb-2">한글패치 플레이 가능!</h2>
 
 <h2 class="text-white text-xl md:text-2xl uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center mt-4">챕터 1-5 한글패치 내려받기</h2>
-<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.3 (맥 지원 예정!)</span></h4>
+<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.4 (맥 지원 예정!)</span></h4>
 
 <div id="download-wrapper" class="w-full mt-4 motion-safe:animate-fade-in">
   <div class="relative flex flex-col justify-center items-center max-w-none mx-auto gap-4 w-full">
@@ -318,7 +343,7 @@
       </a>
 
     <div class="w-full mt-2 mb-2">
-      <a href="https://www.highjinkx.com/undertale" target="_blank" rel="noopener noreferrer" id="highjinkx-banner-link" class="block w-full rounded-lg overflow-hidden transition-opacity hover:opacity-90">
+      <a href="https://www.highjinkx.com/undertale" target="_blank" rel="noopener noreferrer" id="highjinkx-banner-link" class="block w-full rounded-lg overflow-hidden transition-opacity hover:opacity-90 relative shimmer-effect">
         <img src="assets/images/banner.png" alt="Highjinkx Undertale" width="2953" height="711" class="w-full h-auto block rounded-lg aspect-[2953/711] object-contain" />
       </a>
     </div>
@@ -429,10 +454,10 @@
     
     <div class="modal-buttons">
       <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/1.4.3/ddemokpwindows1.4.2.zip" class="modal-btn font-pixel" download>데모 한글패치 내려받기</a>
-      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.3.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
+      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.4.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
     </div>
     
-    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.3.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
+    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.4.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
 
     <div class="border-2 border-[#ff3333] rounded-lg p-4 text-center font-pixel text-white bg-black" 
          style="position: absolute; top: calc(100% + 24px); left: -2%; width: 104%; transform: rotate(-1.5deg); transform-origin: top left; z-index: -1; box-shadow: 4px 6px 0px rgba(0,0,0,0.7);">
