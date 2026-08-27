@@ -8,7 +8,8 @@
     <style>
         @font-face {
             font-family: 'GalmuriMono11';
-            src: url('assets/font/GalmuriMono11.woff2') format('woff2');
+            src: url('assets/font/DeltaDotumKR.ttf') format('truetype');
+            size-adjust: 200%;
             font-weight: normal;
             font-style: normal;
             font-display: swap;
@@ -74,6 +75,17 @@
             font-size: 1.2rem;
             line-height: 1.6;
             white-space: pre-wrap;
+
+            word-break: keep-all;
+
+            padding-left: 1.4em;
+            text-indent: -1.4em;
+        }
+
+
+        body.pixel-mode #dialogue-text {
+            padding-left: 0;
+            text-indent: 0;
         }
 
         .waiting::after {
@@ -113,6 +125,7 @@
     <audio id="bgm" src="assets/media/man.mp3" loop></audio>
     <audio id="bgm2" src="assets/media/man2.mp3" loop></audio>
     <audio id="bgm3" src="assets/media/man3.mp3" loop></audio>
+    <audio id="bgm4" src="assets/media/man4.mp3" loop></audio>
     <audio id="snd-egg" src="assets/media/egg.mp3"></audio>
     <audio id="snd-text" src="assets/media/snd_text.wav"></audio> <!-- 기본모드(갈무리11) 타이핑음 -->
     <audio id="snd-text-pixel" src="assets/media/snd_board_text_main.wav"></audio> <!-- 픽셀모드(갈무리7) 타이핑음 -->
@@ -139,6 +152,7 @@
         const bgm = document.getElementById('bgm');
         const bgm2 = document.getElementById('bgm2');
         const bgm3 = document.getElementById('bgm3');
+        const bgm4 = document.getElementById('bgm4');
         const sndEgg = document.getElementById('snd-egg');
         const sndText = document.getElementById('snd-text');
         const sndTextPixel = document.getElementById('snd-text-pixel');
@@ -155,7 +169,7 @@
         let currentShowArrow = true;
         let currentCallback = null;
         let typedText = "";
-        let typeInterval = null;
+        let typeTimeout = null;
         let metaInfo = "";
         let timeInfo = "";
 
@@ -171,7 +185,7 @@
                     const battery = await navigator.getBattery();
                     const level = Math.floor(battery.level * 100);
                     if (level < 100) {
-                        metaInfo = `${level} 남았다고 조급해하지 말아요.`;
+                        metaInfo = `${level} 남았다고 조급해하지 말렴.`;
                     }
                 }
             } catch (e) {}
@@ -180,13 +194,13 @@
         function fetchTimeInfo() {
             const hour = new Date().getHours();
             if (hour >= 0 && hour < 5) {
-                timeInfo = "벌써 늦은 새벽인데 잠들지 못했군요,";
+                timeInfo = "벌써 늦은 새벽인데 잠들지 못했구나,";
             } else if (hour >= 5 && hour < 12) {
-                timeInfo = "당신의 하루가 이제 막 시작되었겠네요,";
+                timeInfo = "네 하루가 이제 막 시작되었겠구나,";
             } else if (hour >= 12 && hour < 18) {
-                timeInfo = "나른한 오후군요,";
+                timeInfo = "나른한 오후네,";
             } else {
-                timeInfo = "밤이 깊어가고 있군요,";
+                timeInfo = "밤이 깊어가고 있네,";
             }
         }
 
@@ -200,7 +214,7 @@
             if (isFocusTrapActive && isBetrayed) {
                 isFocusTrapActive = false; 
                 
-                clearInterval(typeInterval);
+                clearTimeout(typeTimeout);
                 isTyping = false;
                 isChoiceActive = false;
                 isWaitingForClick = false;
@@ -208,7 +222,7 @@
                 dBox.classList.remove('waiting');
 
                 runSequence([
-                    "저를 잊으셨군요.",
+                    "나를 잊었구나.",
                     beVoid
                 ]);
             }
@@ -238,13 +252,14 @@
             isTyping = false;
             isWaitingForClick = false;
             currentCallback = null;
-            clearInterval(typeInterval);
+            clearTimeout(typeTimeout);
 
             document.body.classList.remove('pixel-mode');
             isPixelMode = false;
             tree.src = "assets/images/tree.gif";
+            tree.style.display = '';
 
-            [bgm, bgm2, bgm3].forEach(audio => {
+            [bgm, bgm2, bgm3, bgm4].forEach(audio => {
                 if (audio && !audio.paused) {
                     let vol = audio.volume;
                     let fade = setInterval(() => {
@@ -274,11 +289,18 @@
             dText.innerHTML = "";
             
             let i = 0;
-            typedText = text;
-            clearInterval(typeInterval);
+            typedText = text.replace(/\^1/g, ''); 
+            clearTimeout(typeTimeout);
 
-            typeInterval = setInterval(() => {
+            function typeNextChar() {
+                if (!isTyping) return;
                 if (i < text.length) {
+                    if (text.substring(i, i+2) === '^1') {
+                        i += 2;
+                        typeTimeout = setTimeout(typeNextChar, 1000);
+                        return;
+                    }
+                    
                     const char = text.charAt(i);
                     dText.innerHTML += char;
                     
@@ -292,14 +314,17 @@
                         }
                     }
                     i++;
+                    typeTimeout = setTimeout(typeNextChar, 40);
                 } else {
                     finishTyping();
                 }
-            }, 40);
+            }
+
+            typeNextChar();
         }
 
         function finishTyping() {
-            clearInterval(typeInterval);
+            clearTimeout(typeTimeout);
             dText.innerHTML = typedText;
             isTyping = false;
             
@@ -354,38 +379,8 @@
         document.body.addEventListener('click', () => {
             if (gameState === -1 || isChoiceActive) return;
 
-            if (gameState === 2 || gameState === 4) {
-                if (isTyping) {
-                    finishTyping();
-                    return;
-                }
-                if (isWaitingForClick && currentCallback) {
-                    isWaitingForClick = false;
-                    dBox.classList.remove('waiting');
-                    currentCallback();
-                    return;
-                }
-                
-                if (dBox.style.display === 'none' || dBox.style.display === '') {
-                    dBox.style.display = 'flex';
-                    if (gameState === 2) {
-                        runSequence([
-                            "* (음, 남자는 이제 여기 없다.)",
-                            () => { dBox.style.display = 'none'; currentCallback = null; }
-                        ]);
-                    } else if (gameState === 4) {
-                        runSequence([
-                            "* (음, 여기에 남자는 없다.)",
-                            "* (... 하지만 크리스의 어깨에는, 그 무게가 여전히 남아있었다.)",
-                            "* (저 멀리, 저 멀리까지 이어져 있는 듯한 그 무게가...)",
-                            () => { dBox.style.display = 'none'; currentCallback = null; }
-                        ]);
-                    }
-                }
-                return;
-            }
-
-            if (!isBgmPlaying && gameState === 0) {
+            // 브금 재생 로직을 위로 올려 return에 막히지 않게 수정
+            if (!isBgmPlaying && gameState === 0 && dBox.style.display !== 'none') {
                 bgm.play().catch(()=>{});
                 isBgmPlaying = true;
             }
@@ -399,12 +394,62 @@
                 isWaitingForClick = false;
                 dBox.classList.remove('waiting');
                 currentCallback();
+                return;
+            }
+
+            if (gameState >= 1 && gameState <= 5 && (dBox.style.display === 'none' || dBox.style.display === '')) {
+                dBox.style.display = 'flex';
+                if (gameState <= 4) {
+                    runSequence([
+                        "* (음, 남자는 이제 여기 없다.)",
+                        () => { dBox.style.display = 'none'; currentCallback = null; }
+                    ]);
+                } else if (gameState === 5) {
+                    runSequence([
+                        "* (음, 남자는 여기에 없다.)",
+                        "* (... 허나, 크리스의 어깨엔, 여태껏 계속 묵직함이 맴돌고 있다.)",
+                        "* (아스라이, 먼 저편에서부터 전해져 내려온 묵직함이...)",
+                        () => { dBox.style.display = 'none'; currentCallback = null; }
+                    ]);
+                }
+                return;
             }
         });
 
+        // ------------------ 챕터 2 로직 ------------------
+        function startChapter2() {
+            tree.src = "assets/images/tree.gif"; 
+            document.body.classList.remove('pixel-mode');
+            isPixelMode = false;
+            
+            bgm2.pause(); bgm3.pause(); bgm4.pause();
+            bgm.play().catch(()=>{});
+            isBgmPlaying = true;
+
+            runSequence([
+                "* (음, 누군가 있다.)",
+                "* (당신을 봐서 기쁜 것 같다.)",
+                {
+                    text: "* (어떻게 생각하는가?)",
+                    opt1: "기뻐한다", opt2: "기뻐하지 않는다",
+                    fn1: () => {
+                        sndEgg.play().catch(()=>{});
+                        runSequence([
+                            "* (달걀을 획득했다.)",
+                            () => manLeaves(2)
+                        ]);
+                    },
+                    fn2: () => runSequence([
+                        "* (음, 남자는 이제 여기 없다.)",
+                        () => manLeaves(2)
+                    ])
+                }
+            ]);
+        }
+
         // ------------------ 챕터 3 로직 ------------------
         function startChapter3Meta() {
-            bgm.pause();
+            bgm.pause(); bgm3.pause(); bgm4.pause();
             bgm2.play().catch(()=>{});
             isBgmPlaying = true;
             tree.src = "assets/images/tree2.gif";
@@ -413,51 +458,51 @@
             isPixelMode = true; 
 
             let seq = [
-                "음,",
-                "봄이 지나 여름이 되었고, 여름이 지나 추위가 찾아왔군요,"
+                "자,",
+                "봄이 가고 여름이 오고, 여름이 지나 추위가 찾아왔건만,"
             ];
 
             if (timeInfo !== "") seq.push(timeInfo);
             if (metaInfo !== "") seq.push(metaInfo);
             
             seq.push(
-                "그리고 여전히,",
-                "난 잊힌 남자입니다.",
+                "여전히,",
+                "나는 잊힌 남자란다.",
                 {
-                    text: "당신도, 나를 잊을 건가요?",
-                    opt1: "예", opt2: "아니오",
+                    text: "너도, 나를 잊어버릴 거지?",
+                    opt1: "그렇다", opt2: "아니다",
                     fn1: beVoid,
                     fn2: () => {
                         isFocusTrapActive = true; 
                         
                         runSequence([
-                            "정말인가요? 당신은 이미 날 여러 번 잊어버렸죠.",
-                            "당신이 나를 만난다 해도, 금방 잊히고 말 거에요.",
-                            "가끔은 저조차도 저에 대해 잊고 마는걸요...",
+                            "정말로? 너는 이미 날 여러 번이나 잊어버렸는걸.",
+                            "나와 다시 만난다 해도, 금세 잊고 말 테지.",
+                            "가끔은 나조차도 나 자신을 잊어버리곤 하니까...",
                             {
-                                text: "다시 물을게요. 당신도 나를 잊을 건가요?",
-                                opt1: "예", opt2: "아니오",
+                                text: "다시 한번 묻도록 하마. 너도 나를 잊어버릴 거지?",
+                                opt1: "그렇다", opt2: "아니다",
                                 fn1: beVoid,
                                 fn2: () => {
                                     isFocusTrapActive = false; 
                                     
                                     runSequence([
-                                        "날 기억하겠다고요?",
-                                        "음. 그렇다면, 잊어버려요.",
-                                        "나는 그저 남자예요.",
-                                        "나의 이야기를 귀담아 들어주세요.",
-                                        "아주 오래 전에는, 온 세상이 이곳과 같은 모습이었답니다.",
+                                        "날 기억해 주겠다고?",
+                                        "음. 그렇다면, 그냥 잊어주렴.",
+                                        "나는 그저 평범한 남자일 뿐이니까.",
+                                        "내 이야기를 귀담아들어 보렴.",
+                                        "옛날 옛적에, 온 세상은 이곳과 같은 모습이었단다.",
                                         {
-                                            text: "이를 믿나요?",
-                                            opt1: "예", opt2: "아니오",
+                                            text: "너도 그렇게 생각하니?",
+                                            opt1: "그렇다", opt2: "아니다",
                                             fn1: () => runSequence([
-                                                "정말인가요? 이런 터무니없는 이야기를 믿나요?",
-                                                "그렇다니 기뻐요. 계속 이야기할게요...",
+                                                "정말이니? 이런 터무니없는 이야기를 믿는다는 게야?",
+                                                "그렇다니 참으로 기쁘구나. 이야기를 계속하마...",
                                                 nextStoryNode1
                                             ]),
                                             fn2: () => runSequence([
-                                                "물론 그렇겠죠. 이것은 그저 이야기이니까요.",
-                                                "그럼, 계속 이야기할게요...",
+                                                "당연히 아니겠지. 이건 그저 옛날이야기일 뿐이니까.",
+                                                "자, 이야기를 계속하마...",
                                                 nextStoryNode1
                                             ])
                                         }
@@ -473,19 +518,19 @@
 
         function nextStoryNode1() {
             runSequence([
-                "음, 세상은 변했어요. 사회가 이루어졌지요.",
-                "땅이 물로 덮이고, 공룡이 나타나고, 빙하기가 찾아왔어요,",
-                "흠... 잠깐, 공룡은 아직도 있죠... 헷갈렸나요?",
-                "그렇든, 그러지 않든, 내가 말할 수 있는 곳은 이 섬밖에 남지 않았어요.",
+                "음, 그 후 세상은 변했고, 사회가 생겨났지.",
+                "땅이 물로 뒤덮이고, 공룡이 나타나고, 빙하기가 찾아오고,",
+                "흠... 가만, 공룡은 지금도 있구나... 내가 착각했나?",
+                "어찌 됐든, 이제, 내가 입을 열 수 있는 곳은 이 섬밖에 남지 않았단다.",
                 {
-                    text: "나의 말을 이해하나요?",
-                    opt1: "예", opt2: "아니오",
+                    text: "내 말을 이해할 수 있겠니?",
+                    opt1: "그렇다", opt2: "아니다",
                     fn1: () => runSequence([
-                        "재미있네요, 저는 이 말이 전혀 이해되지 않거든요.",
+                        "재밌구나. 정작 나는 내 말이 무슨 뜻인지 하나도 모르겠거든.",
                         nextStoryNode2
                     ]),
                     fn2: () => runSequence([
-                        "재미있네요. 저도 이해되지 않아요.",
+                        "재밌구나. 나조차도 이해가 안 되거든.",
                         nextStoryNode2
                     ])
                 }
@@ -494,25 +539,25 @@
 
         function nextStoryNode2() {
             runSequence([
-                "그러나 언젠가, 이 섬 또한 사라지겠지요.",
-                "그렇다면 우리는 다시 만날 수 없을 거예요.",
+                "하지만 언젠가, 이 섬 또한, 사라져 버리겠지.",
+                "그렇게 되면 우린 두 번 다시 만날 수 없게 될 테고.",
                 "...",
                 {
-                    text: "다시 만나고 싶었나요?",
-                    opt1: "예", opt2: "아니오",
+                    text: "다시 만나고 싶었니?",
+                    opt1: "그렇다", opt2: "아니다",
                     fn1: () => runSequence([
-                        "오, 기뻐라.",
-                        "나의 일정을 말해줄게요. 귀담아 들어주세요.",
-                        "목요일에는, 나는 도넛을 팔아요.",
-                        "금요일에는, 나는 남은 도넛을 쓰레기장에 버려요.",
-                        "토요일에는, 나는 창가에 도넛을 식혀요.",
-                        "일요일에는, 나는 밀을 거둬요.",
-                        "숨을 참고, 왼쪽 방향으로 걸으면서, 100부터 거꾸로 수를 세세요...",
+                        "아아, 기쁜 일이구나.",
+                        "내 일정을 알려주마. 똑똑히 들어보렴.",
+                        "목요일엔, 도넛을 팔러 간단다.",
+                        "금요일엔, 안 팔리고 남은 것들을 쓰레기통에 버리지.",
+                        "토요일엔, 창가에 도넛을 두고 식혀.",
+                        "일요일엔, 밀을 거두러 간단다.",
+                        "숨을 참고, 왼쪽으로 걸어가며, 100부터 거꾸로 세어보렴...",
                         {
-                            text: "받아적었나요?",
-                            opt1: "예", opt2: "아니오",
-                            fn1: () => runSequence(["당신은 정말 친절하군요.", giveEggAgain]),
-                            fn2: () => runSequence(["음, 이미 날 잊는 듯 하군요.", giveEggAgain])
+                            text: "잘 받아 적었니?",
+                            opt1: "그렇다", opt2: "아니다",
+                            fn1: () => runSequence(["참으로 다정한 아이구나.", giveEggAgain]),
+                            fn2: () => runSequence(["음, 벌써 잊기 시작한 모양이네.", giveEggAgain])
                         }
                     ]),
                     fn2: beVoid
@@ -522,13 +567,13 @@
 
         function giveEggAgain() {
             runSequence([
-                "이걸 받고 날 기억해주세요.",
+                "나를 기억할 수 있게 이걸 가져가렴.",
                 () => { sndEgg.play().catch(()=>{}); nextSequence(); },
-                "* (크리스는 알을 받았다.)",
-                "그러나, 날이 지나면 잃어버릴 수 있으니.",
-                "꼭 어딘가에 놓도록 해요.",
+                "* (크리스는 달걀을 받았다.)",
+                "하지만, 날이 지나면 잃어버릴지도 모르니.",
+                "꼭 어딘가에 잘 두도록 하렴.",
                 {
-                    text: "알은 부끄러운 게 아니랍니다.",
+                    text: "달걀은 부끄러워할 게 아니란다.",
                     opt1: "알겠다", opt2: "모르겠다",
                     fn1: finishStory,
                     fn2: finishStory
@@ -538,18 +583,63 @@
 
         function finishStory() {
             runSequence([
-                "주관이 확실하군요.",
-                "마음에 들어요!",
-                "당신도 나를 잊고, 나도 나를 잊겠지만,",
-                "당신의 친절은 잊지 않을게요.",
-                "이제, 이 섬은 곧 사라집니다. 당신도 떠나야 해요.",
-                "당신이 원한다면, 그곳에서 우리는 다시 만날 겁니다...",
-                "11시간이 걸리든 11년이 걸리든, 델타룬은 기다리고 있을 거예요.",
-                "그러니 여유를 가지고, 세수하고, 옷을 입으세요!",
-                () => manLeaves(2)
+                "자기 생각이 아주 뚜렷하구나.",
+                "대견하구나!",
+                "너는 나를 잊고, 나도 너를 잊어버릴지도 모르지만,",
+                "그래도 네 다정함은 잊지 않으마.",
+                "자, 이 섬은 곧 사라질 테니. 너도 이제 가보렴.",
+                "네가 바란다면, 그곳에서 우린 다시 만날 수 있겠지...",
+                "11시간이든 11년이든, 델타룬은 기다리고 있을 거란다.",
+                "그러니 서두르지 말고, 세수도 하고, 옷도 잘 챙겨 입으렴!",
+                () => manLeaves(3)
             ]);
         }
 
+        // ------------------ 챕터 4 로직 ------------------
+        function startChapter4() {
+            tree.style.display = 'none';
+            document.body.classList.remove('pixel-mode');
+            isPixelMode = false;
+            
+            bgm.pause(); bgm2.pause(); bgm3.pause();
+            bgm4.play().catch(()=>{});
+            isBgmPlaying = true;
+
+            runSequence([
+                "* (크리스는 연필을 집어들었다.)",
+                "* (나무 뒤에서 본 것을 스케치하는 것으로 그림을 시작했다.)",
+                "* (하지만, 스케치를 하면서, 선들이 길을 잃은 듯, 어긋나기 시작했다.)",
+                "* (크리스는 다시 그림을 그렸다. 이미 그어진 선 위에 선을 덧대며.)",
+                "* (갑자기 그리는 것을 멈추거나, 원하는 대로 그려지지 않고 그림이 달라지는 경우도 많았다.)",
+                "* (그럴 때마다, 크리스는 다시 그렸다, 몇 번이고, 몇 번이고, 계속해서.)",
+                "* (수많은 반복 끝에, 크리스의 손놀림은 빠르고 부드러워져 갔다...)",
+                "* (... 마지막에는 종이를 보지 않고도, 한 줄의 거친 선만으로 스케치를 완성했다.)",
+                "* (...)",
+                "* (결국, 겹겹이 스케치를 계속해서 쌓아올린 끝에...)",
+                "* (... 캔버스의 표면은 그저 무채색의 번짐이 되어버렸다.)",
+                "* (...)",
+                "* (그 후, 그 위에는 나무가 그려졌다...)",
+                "* (... 그 모든 것 위에 덧그려진...)",
+                "* (... 한 점의 정물화만이 남았다.)",
+                "* (... 애초에, 이 방에서 볼 수 있는 것이라곤 나무 한 그루뿐이었으니.)",
+                "* (...)",
+                "* (그림 그리기가 끝난 듯, 크리스는 일어났다.)",
+                "* (...)",
+                "* (하지만, 그 손은, 흑연이 짙게 묻은 채로...)",
+                "* (... 계속 움직이고 있었다. 미처 보지 못한 것을 그리려는 것처럼.)",
+                "* (당신은 캔버스의 질감에 감탄했다.)",
+                () => { sndEgg.play().catch(()=>{}); nextSequence(); },
+                "* (근처에 있는 이젤에서 달걀을 주웠다.)",
+                "* (누군가가 나무 그림을 그리고 있는 모양이다.)",
+                "* (하지만, 이상하게도, 아직 나무 껍질을 그리지 않은 듯하다.)",
+                "* (개수대다.)",
+                "* (그림을 그린 후에 손을 씻을 곳이 없다는 것은 말도 안되는 일이다.)",
+                "* (당신은 손에 물을 흘려보냈고, 손을 말렸다.)",
+                "* (손가락 사이로, 희미한 회색 자국 하나가 끝까지 남은 채 반짝였다.)",
+                "* (... 모든 것을 씻어낼 수는 없는 법이다.)",
+                () => manLeaves(4)
+            ]);
+        }
 
         // ------------------ 챕터 5 로직 ------------------
         function startChapter5Main() {
@@ -557,22 +647,21 @@
             document.body.classList.remove('pixel-mode');
             isPixelMode = false;
             
-            bgm.pause(); bgm2.pause();
+            bgm.pause(); bgm2.pause(); bgm4.pause();
             bgm3.play().catch(()=>{});
             isBgmPlaying = true;
 
             runSequence([
-                "* (그가 나무 뒤에 있다.)",
-                "* (음, 여기 남자가 있다.)",
+                "* (음, 이곳에 한 남자가 있다.)",
                 {
-                    text: "* (그가 당신에게 무언가 건넨다.)",
-                    opt1: "받는다", opt2: "받지 않는다",
+                    text: "* (그가 무언가를 건네려 한다.)",
+                    opt1: "예", opt2: "아니요",
                     fn1: () => {
                         sndEgg.play().catch(()=>{});
                         runSequence([
-                            "* (당신은 \"달걀\"을 받았다.)",
+                            "* (\"달걀\"을 손에 넣었다.)",
                             {
-                                text: "* (남자를 계속 만났었던가?)",
+                                text: "* (지금까지 남자를 계속 만났었던가?)",
                                 opt1: "예", opt2: "아니오",
                                 fn1: () => ch5EggDialogue(true),
                                 fn2: () => ch5EggDialogue(false)
@@ -580,8 +669,8 @@
                         ]);
                     },
                     fn2: () => runSequence([
-                        "* (음, 여기에 남자는 없다.)",
-                        () => manLeaves(4)
+                        "* (음, 남자는 여기에 없다.)",
+                        () => manLeaves(5)
                     ])
                 }
             ]);
@@ -591,63 +680,63 @@
             runSequence([
                 {
                     text: "* (어떻게 할까?)",
-                    opt1: "더 요구한다", opt2: "더 요구하지 않는다",
+                    opt1: "더 요구한다", opt2: "요구하지 않는다",
                     fn1: () => hasAllEggs ? ch5RouteA() : ch5RouteX(),
                     fn2: () => hasAllEggs ? ch5RouteB() : ch5RouteX()
                 }
             ]);
         }
 
-        function ch5RouteA() { // 수집(O) & 더 요구한다
+        function ch5RouteA() { 
             runSequence([
-                "* (음, 남자는 당신의 어깨에 부드럽게 손을 얹었다.)",
-                "* (그리고, 당신에게 빈 손바닥을 보여주며...)",
-                "* (그는 손가락을 입가에 댄 뒤, 미소를 지으며 고개를 젓는다.)",
-                "* (당신은 이미 모든 것을 가진 것 같다.)",
+                "* (음, 남자가 어깨 위로 살포시 손을 얹어왔다.)",
+                "* (이윽고, 텅 빈 제 손바닥을 내보이더니...)",
+                "* (입가에 검지를 댄 채, 미소 지으며 가만히 고개를 가로저었다.)",
+                "* (당신은 이미 모든 것을 얻은 것 같다.)",
                 "* (...)",
-                "* (그는 손을 흔들어 작별 인사를 하고, 잠시 후 시선을 살짝 돌린다.)",
+                "* (이윽고 찰나의 침묵 끝에, 시선을 살짝 빗기며 그는 작별을 고하듯 손을 흔들었다.)",
                 "* (...)",
-                "* (크리스는 묘한 쓸쓸함을 느꼈다.)",
-                "* (이제 더는 그 남자를 찾지 말아야 한다는 느낌이었다.)",
-                "* (... 애초에 그런 적은 한 번도 없었는데도.)",
-                () => manLeaves(4)
+                "* (크리스는 왠지 모를 기묘한 서글픔에 잠겼다.)",
+                "* (두 번 다시 그 남자를 쫓아선 안 될 것만 같은 예감이었다.)",
+                "* (... 애당초 그랬던 적조차 없었음에도 말이다.)",
+                () => manLeaves(5)
             ]);
         }
 
-        function ch5RouteB() { // 수집(O) & 더 요구하지 않는다
+        function ch5RouteB() { 
             runSequence([
-                "* (음, 남자는 당신의 어깨에 부드럽게 손을 얹었다.)",
-                "* (그리고, 당신에게 빈 손바닥을 보여주며...)",
-                "* (그는 손가락을 입가에 댄 뒤, 미소를 지으며 고개를 끄덕인다.)",
-                "* (당신은 이미 모든 것을 가진 것 같다.)",
+                "* (음, 남자가 어깨 위로 살포시 손을 얹어왔다.)",
+                "* (이윽고, 텅 빈 제 손바닥을 내보이더니...)",
+                "* (입가에 검지를 댄 채, 미소 지으며 가만히 고개를 끄덕였다.)",
+                "* (당신은 이미 모든 것을 얻은 것 같다.)",
                 "* (...)",
-                "* (그는 손을 흔들어 작별 인사를 하고, 잠시 후 시선을 살짝 돌린다.)",
+                "* (이윽고 찰나의 침묵 끝에, 시선을 살짝 빗기며 그는 작별을 고하듯 손을 흔들었다.)",
                 "* (...)",
-                "* (크리스는 묘한 쓸쓸함을 느꼈다.)",
-                "* (이제 더는 그 남자를 찾지 말아야 한다는 느낌이었다.)",
-                "* (... 애초에 그런 적은 한 번도 없었는데도.)",
-                () => manLeaves(4)
+                "* (크리스는 왠지 모를 기묘한 서글픔에 잠겼다.)",
+                "* (두 번 다시 그 남자를 쫓아선 안 될 것만 같은 예감이었다.)",
+                "* (... 애당초 그랬던 적조차 없었음에도 말이다.)",
+                () => manLeaves(5)
             ]);
         }
 
-        function ch5RouteX() { // 수집(X)
+        function ch5RouteX() { 
             runSequence([
-                "* (남자가 고개를 강하게 끄덕였다.)",
-                "* (그는 저 먼 곳을 가리켰다.)",
-                "* (저편에는, 또 다른 나무가 있었다.)",
-                "* (자세히 보니, 이 나무와 거의 똑같아 보였다.)",
-                "* (고개를 내밀어 보고, 당신은 그 너머에 또 다른 나무가 있다는 것을 알아차렸다.)",
-                "* (마치 거울이 끝없이 늘어선 모습을 바라보는 듯한 느낌이 들었다...)",
-                "* (당신은 머리가 빙빙 돌기 시작했다.)",
-                "* (...남자는 이를 보고 걱정스러운 표정을 지었다.)",
-                "* (그는 무언가 말하고 싶은 듯했지만...)",
+                "* (남자는 힘주어 고개를 끄덕였다.)",
+                "* (그는 아스라이 먼 저편을 손가락으로 가리켰다.)",
+                "* (그곳에는, 또 다른 나무가 자리하고 있었다.)",
+                "* (실로, 여기 이 나무와 꼭 빼닮은 모습이었다.)",
+                "* (고개를 빼꼼 내밀어 보니, 그 뒤로 또 다른 나무가 자리하고 있었다.)",
+                "* (마치 끝없이 마주 보는 거울 속을 들여다보는 듯한 감각이었다...)",
+                "* (머리가 빙빙 돌기 시작했다.)",
+                "* (... 남자는 그 모습을 지켜보다 근심 어린 표정을 지었다.)",
+                "* (그는 무언가 입을 떼려 했지만...)",
                 "* (...)",
-                "* (음, 남자는 미소지었다.)",
-                "* (그리고 당장은 작별을 고하며 손을 흔들었다.)",
-                () => manLeaves(4)
+                "* (음, 남자는 가만히 미소 지었다.)",
+                "* (그리고, 지금은 이만 안녕이라는 듯 가볍게 손을 흔들어 보였다.)",
+                () => manLeaves(5)
             ]);
         }
-
+        
         // ------------------ 초기화 로직 ------------------
         function init() {
             if (gameState === -1) { 
@@ -655,7 +744,7 @@
                 return; 
             }
 
-            if (gameState === 4) {
+            if (gameState === 5) {
                 dBox.style.display = 'none'; 
                 tree.src = "assets/images/tree.gif"; 
                 return;
@@ -679,12 +768,7 @@
                                 runSequence([
                                     "* (달걀을 받았다.)",
                                     "* (세상을 다시 그리면 무언가 변할지도 모른다.)",
-                                    () => { 
-                                        localStorage.setItem('gameState', '1'); 
-                                        gameState = 1;
-                                        dBox.style.display = 'none'; 
-                                        currentCallback = null; 
-                                    }
+                                    () => manLeaves(1)
                                 ]);
                             },
                             fn2: () => runSequence(["* (그럼 그는 여기에 있을 필요가 없다.)", beVoid])
@@ -693,13 +777,27 @@
                 };
             } 
             else if (gameState === 1) { 
-                dText.innerText = "델타룬 챕터 3을 플레이 하셨나요?";
+                dText.innerText = "델타룬 챕터 2를 플레이하셨나요?";
                 showChoices("예", "아니오", 
-                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter3Meta, fn2: beVoid }]),
+                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter2, fn2: beVoid }]),
                     beVoid
                 );
             } 
             else if (gameState === 2) { 
+                dText.innerText = "델타룬 챕터 3을 플레이하셨나요?";
+                showChoices("예", "아니오", 
+                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter3Meta, fn2: beVoid }]),
+                    beVoid
+                );
+            }
+            else if (gameState === 3) {
+                dText.innerText = "델타룬 챕터 4를 플레이하셨나요?";
+                showChoices("예", "아니오", 
+                    () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter4, fn2: beVoid }]),
+                    beVoid
+                );
+            }
+            else if (gameState === 4) { 
                 dText.innerText = "델타룬 챕터 5를 플레이하셨나요?";
                 showChoices("예", "아니오", 
                     () => runSequence([{ text: "스포일러?", opt1: "예", opt2: "아니오", fn1: startChapter5Main, fn2: beVoid }]),
