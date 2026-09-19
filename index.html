@@ -323,7 +323,7 @@
 </h3>
 
 <h2 class="text-white text-xl md:text-2xl uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center mt-4">챕터 1-5 한글패치 내려받기</h2>
-<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.7 (맥 지원 예정!)</span></h4>
+<h4 class="text-white text-lg uppercase font-pixel text-shadow-[1px_1px_0_#203288] text-center"><span style="font-size: 0.85em;">V 2.1.8 (맥 지원 예정!)</span></h4>
 
 <div id="download-wrapper" class="w-full mt-4 motion-safe:animate-fade-in">
   <div class="relative flex flex-col justify-center items-center max-w-none mx-auto gap-4 w-full">
@@ -346,9 +346,9 @@
         </div>
       </a>
 
-    <div class="w-full mt-2 mb-2">
-      <a href="https://www.highjinkx.com/undertale" target="_blank" rel="noopener noreferrer" id="highjinkx-banner-link" class="block w-full rounded-lg overflow-hidden transition-opacity hover:opacity-90 relative shimmer-effect">
-        <img src="assets/images/banner.png" alt="Highjinkx Undertale" width="2953" height="711" class="w-full h-auto block rounded-lg aspect-[2953/711] object-contain" />
+    <div class="w-full mt-3 mb-2 flex justify-center">
+      <a href="https://www.deltarunekr.kro.kr/assetview/" target="_blank" rel="noopener noreferrer" class="font-pixel text-sm md:text-base transition-colors duration-150 text-center" style="color: rgba(255, 255, 255, 0.85); text-decoration: underline; text-underline-offset: 4px;" onmouseover="this.style.color='#ffff00'" onmouseout="this.style.color='rgba(255, 255, 255, 0.85)'">
+        창작자들을 위한 한글패치 에셋 갤러리 둘러보기 →
       </a>
     </div>
 
@@ -458,15 +458,14 @@
     
     <div class="modal-buttons">
       <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/1.4.3/ddemokpwindows1.4.2.zip" class="modal-btn font-pixel" download>데모 한글패치 내려받기</a>
-      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.7.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
+      <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.8.zip" class="modal-btn font-pixel" download>일반 한글패치 내려받기</a>
     </div>
     
-    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.7.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
+    <a href="https://github.com/newhajinyoon/deltarunekr/releases/download/2.1/dkpwindows2.1.8.7z" class="small-link" download>만약 바이러스로 감지된다면 7z로 시도해보세요</a>
 
   </div>
 </div>
 
-<!-- Main Application Controller -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
@@ -523,23 +522,7 @@
       }
     }
 
-    // 함수 실행
     fetchGitHubDownloads();
-
-    const bannerLink = document.getElementById('highjinkx-banner-link');
-    if (bannerLink) {
-      bannerLink.addEventListener('click', () => {
-        const timestamp = new Date().getTime();
-        const url = `https://api.counterapi.dev/v1/deltarunekr/highjinkx-banner/up?t=${timestamp}`;
-
-        fetch(url, { 
-          method: 'GET',
-          keepalive: true,
-          cache: 'no-store'
-        })
-        .catch(() => {});
-      });
-    }
 
     const modal = document.getElementById('download-modal');
     const openBtn = document.getElementById('windows-download-btn');
